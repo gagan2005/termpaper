@@ -107,6 +107,38 @@ $$\#\{x \in \mathbb{F}^{4}_{2} |S(x) + S(x + \Delta_{I} ) = \Delta_{O} \} \leq 2
 
 % \label{sec:main}
 
+
+\section{Key Schedule}
+We call the original key as master key and denote it as $mk$. It will be of 64/80/96 bit for  KLIEN 64/80/96. As a result of key scheduling algorthm 8/10/12  subkeys with length same as master key will be generated for KLIEN 64/80/96. Without LOG we will talk about key scheduling of KLEIN 64 \\
+
+\begin{itemize}
+
+\item The first subkey $sk_{0}$ is same as the master key \\
+	$sk_{0}$=$mk$.Each of the subsequent $sk_{i+1}$ will be derived from $sk_{i}$ as follows - \\
+
+\item Denote $sk_{i}$ as a tuple of bytes - (x0 x1 x2 x3 x4 x5 x6 x7) \\
+Divide the tuple into two equal parts and call them a and b 
+
+a - (x0 x1 x2 x3) \\
+b - (x4 x5 x6 x7) \\
+
+\item Now Perform one byte left circular shift to both a and b
+
+a' = (x1 x2 x3 x0) \\
+b' = (x7 x4 x5 x6) \\
+
+\item Swap a' and b' i.e a'' = b' and b''=a' \\
+
+\item Now let a'' = (y0 y1 y2 y3) \\
+and b'' = (z0 z1 z2 z3) \\
+
+We will Xor the round counter i with 3rd byte of a'' and pass 2nd and 3rd byte of b'' through the KLIEN S-BOX and then a''|b'' will become the next subkey \\
+$sk_{i+1}$ = (y0 y1 $ y2 \oplus R_i $ y3 z0 Sbox(z1) Sbox(z2) z4)\\
+\end{itemize}
+
+\section{Main Result}
+\label{sec:main}
+
 %%%% 8. BILBIOGRAPHY %%%%
 \bibliographystyle{alpha}
 \bibliography{abbrev3,crypto,biblio}

@@ -20,9 +20,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Compile LaTeX document
-        uses: Jatus93/Latex-multicompiler@master
+        uses: xu-cheng/latex-action@v2
         with:
-          path_to_list: main.tex
-          artifact: true
+          root_file: main.tex
+      - uses: actions/upload-artifact@v2
+        with:
+          name: PDF
+          path: main.pdf
