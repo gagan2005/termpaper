@@ -108,18 +108,16 @@ $$\#\{x \in \mathbb{F}^{4}_{2} |S(x) + S(x + \Delta_{I} ) = \Delta_{O} \} \leq 2
 % \label{sec:main}
 
 
-\section{Algorithm}
-
-\subsection{Rotate Nibbles}
+\subsubsection{Rotate Nibbles step}
 
 Assume at the ith round state is $ b_{0} b_{1} b_{2} b_{3} b_{4} b_{5} b_{6} b_{7} b_{8} b_{9} b_{10} b_{11} b_{12} b_{13} b_{14} b_{15} $ where $b_{i}$ is a nibble. The rotate nibble step involves left circular shift of two bytes of this state i.e after the rotate nibbles step our state becomes $   b_{4} b_{5} b_{6} b_{7} b_{8} b_{9} b_{10} b_{11} b_{12} b_{13} b_{14} b_{15} b_{0} b_{1} b_{2} b_{3} $ 
 
-\subsection{Mix nibbles}
+\subsubsection{Mix nibbles step}
 Let the current state be $c_{0} c_{1} c_{2} c_{3} c_{4} c_{5} c_{6} c_{7} c_{8} c_{9} c_{10} c_{11} c_{12} c_{13} c_{14} c_{15}$\\
 Now first this state is divided into two parts \\
 $ c_{0} c_{1} c_{2} c_{3} c_{4} c_{5} c_{6} c_{7} $ and $c_{8} c_{9} c_{10} c_{11} c_{12} c_{13} c_{14} c_{15}$ \\
-We denote each of this part as a single column matrix with each element as 8-bit($c_{i}|c_{i+1}$) \\. The next state in the algorithm is obtained by multiplying(see 2.2.1 Multiplication section for details ) this columns with a fixed matrix.
-
+We denote each of this part as a single column matrix with each element as 8-bit($c_{i}|c_{i+1}$) \\. The next state in the algorithm is obtained by multiplying(details needed ) this columns with a fixed matrix.
+\\ \\
 $\begin{bmatrix}
 s^{i+1}_{0} | s^{i+1}_{1}\\
 s^{i+1}_{2} | s^{i+1}_{3}\\
@@ -155,7 +153,7 @@ c_{8}|c_{9}\\
 c_{10}|c_{11}\\
 c_{12}|c_{13}\\
 c_{14}|c_{15}
-\end{bmatrix}  $\\
+\end{bmatrix}  $\\ \\
 Thus we obtain the next state 
 $ s^{i+1}_{0}  s^{i+1}_{1}
 s^{i+1}_{2}  s^{i+1}_{3}
@@ -165,8 +163,8 @@ s^{i+1}_{8}  s^{i+1}_{9}
 s^{i+1}_{10}  s^{i+1}_{11}
 s^{i+1}_{12}  s^{i+1}_{13}
 s^{i+1}_{14}  s^{i+1}_{15} $
-\subsubsection{Multiplication}
-Each 8-bit element of the matrix is treated as a polynomial over $GF(2^8)$. They are multiplied modulo $x^4+1$
+
+
 \section{Key Schedule}
 We call the original key as master key and denote it as $mk$. It will be of 64/80/96 bit for  KLIEN 64/80/96. As a result of key scheduling algorthm 8/10/12  subkeys with length same as master key will be generated for KLIEN 64/80/96. Without LOG we will talk about key scheduling of KLEIN 64 \\
 
@@ -178,20 +176,20 @@ We call the original key as master key and denote it as $mk$. It will be of 64/8
 \item Denote $sk_{i}$ as a tuple of bytes - (x0 x1 x2 x3 x4 x5 x6 x7) \\
 Divide the tuple into two equal parts and call them a and b 
 
-a - (x0 x1 x2 x3) \\
-b - (x4 x5 x6 x7) \\
+a - ($ x_{0}$ $x_{1}$ $x_{2}$ $x_{3}$) \\
+b - ($x_{4}$ $x_{5}$ $x_{6}$ $x_{7}$) \\
 
 \item Now Perform one byte left circular shift to both a and b
 
-a' = (x1 x2 x3 x0) \\
-b' = (x7 x4 x5 x6) \\
+$a'$ = ($x_{1}$ $x_{2}$ $x_{3}$ $x_{0}$) \\
+$b'$  = ($x_{7}$ $x_{4}$ $x_{5}$ $x_{6}$) \\
 
-\item Swap a' and b' i.e a'' = b' and b''=a' \\
+\item Swap $a'$ and $b'$  i.e $a''$ = $b'$  and b''=$a'$ \\
 
-\item Now let a'' = (y0 y1 y2 y3) \\
-and b'' = (z0 z1 z2 z3) \\
+\item Now let $a''$ = ($y_{0}$ $y_{1}$ $y_{2}$ $y_{3}$) \\
+and $b''$ = ($z_{0}$ $z_{1}$ $z_{2}$ $z_{3}$) \\
 
-We will Xor the round counter i with 3rd byte of a'' and pass 2nd and 3rd byte of b'' through the KLIEN S-BOX and then a''|b'' will become the next subkey \\
+We will Xor the round counter i with 3rd byte of $a''$ and pass 2nd and 3rd byte of $b''$ through the KLIEN S-BOX and then $a''$|$b''$ will become the next subkey \\
 $sk_{i+1}$ = (y0 y1 $ y2 \oplus R_i $ y3 z0 Sbox(z1) Sbox(z2) z4)\\
 \end{itemize}
 
