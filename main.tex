@@ -48,7 +48,7 @@
 %%%% 7. PAPER CONTENT %%%%
 \section{Introduction}
 As the development and usage of wireless computing and embedded systems is increasing. we are being increasingly dependent on Ubiquitous computing examples are sensors, RFID tags etc. On these limited resource systems the selection of the security algorithms must be done carefully by taking the implementation costs along with the level of security provided. So the Era of light-weight cryptography is started. Many algorithms with various design strategies were proposed.Few of them were skipjack, KATAN, KTANTAN, PRESENT etc. skipjack is 8 bit key and 64-bit block length cipher whose basic design is based on unbalanced feistal network. PRESENT is 80/128 bit key and 64 bit block size cipher  which is extremely hardware efficient as the diffusion layer constitutes of only wiring with no algebraic unit.
-Before wide implementation of a security algorithm, it should be thoroughly analysed. As the result of these analysis an attack on 31 out of 32 rounds of skipjack based on impossible differential is discovered. Also there are weak key attacks and linear attacks on PRESENT.Hence the need of secure lightweight-ciphers did not came to and end. KLEIN is a lightweight block cipher which is created for resource constrained devices like sensors. KLEIN is based on Substitution Permutation Networks. In this paper we will be seeing the working of KLEIN cipher, implementation details and different attacks performed on it along with the comparison of performance and security among few other .
+Before wide implementation of a security algorithm, it should be thoroughly analysed. As the result of these analysis an attack on 31 out of 32 rounds of skipjack based on impossible differential is discovered. Also there are weak key attacks and linear attacks on PRESENT.Hence the need of secure lightweight-ciphers did not came to and end. KLEIN is a lightweight block cipher which is mainly invented for devices like sensors which have very less resources. KLEIN is based on Substitution Permutation Networks. In this paper we will be seeing the working of KLEIN cipher, implementation details and different attacks performed on it along with the comparison of performance and security among few other .
 \section{Design rationale}
 In this section we will be discussing about design rationale chosen when creating KLEIN ciphers.
 \\
@@ -74,8 +74,8 @@ STATE $\gets$ PLAINTEXT;\\
     $AddRoundKey(\text{STATE}, sk i );$\\
 $SubN ibbles(\text{STATE});$ \\
 $RotateN ibbles(\text{STATE});$ \\
-$M ixN ibbles(\text{STATE});$ \\
-$sk i+1 = KeySchedule(sk i , i);$ \\
+$MixN ibbles(\text{STATE});$ \\
+$sk_{i+1} = KeySchedule(sk_{i} , i);$ \\
  }
  CIPHERTEXT $\gets AddRoundKey(\text{STATE}, sk^{N_{R}+1} )$;
  \caption{KLEIN CIPHER}
@@ -83,12 +83,12 @@ $sk i+1 = KeySchedule(sk i , i);$ \\
 \subsection{Round Transformation}
 The Input and Out put of KLEIN is in terms of one-dimensional array of bytes. All the steps in each round can be optimized by byte-oriented algorithms. \textbf{Image should be added here}.
 \subsubsection{SubNibbles step}
-Before this step, the input will be xored with the corresponding round key. The obtained resultant state is passed to subnibbles where the state is divided into 16 4-bit nibbles and given as input to the 4 x 4 Involutive permutation. Involutiveness of S-box is helpful to degrees the implementation costs of calculating its inverse and also the need of protection against side channel attacks is removed as we only need to protect single S-box. The S-box is displayed below.
+Before this step, the corresponding round key will be xor-ed with the input . The obtained resultant state is passed to subnibbles where the state is divided into 16 4-bit nibbles and given as input to the 4 x 4 Involutive permutation. Involutiveness of S-box is helpful to degrees the implementation costs of calculating its inverse and also the need of protection against side channel attacks is removed as we only need to protect single S-box. The S-box is displayed below.
 \begin{center}\begin{math}
 \begin{array}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
 Input &0 &1 &2 &3 &4 &5 &6 &7 &8 &9 &A &B &C & D& E& F&  
-    \hline
+\hline
 Output &7 &4 &A &9 &1 &F &B &0 &C &3 &2 &6 &8 &E &D &5 & 
 \hline
 \end{array}
@@ -105,7 +105,62 @@ $$\#\{x \in \mathbb{F}^{4}_{2} |S(x) + S(x + \Delta_{I} ) = \Delta_{O} \} \leq 2
 \end{enumerate}
 
 
-% \label{sec:main}
+
+
+\subsubsection{Rotate Nibbles step}
+
+Assume at the ith round state is $ b_{0} b_{1} b_{2} b_{3} b_{4} b_{5} b_{6} b_{7} b_{8} b_{9} b_{10} b_{11} b_{12} b_{13} b_{14} b_{15} $ where $b_{i}$ is a nibble. The rotate nibble step involves left circular shift of two bytes of this state i.e after the rotate nibbles step our state becomes $   b_{4} b_{5} b_{6} b_{7} b_{8} b_{9} b_{10} b_{11} b_{12} b_{13} b_{14} b_{15} b_{0} b_{1} b_{2} b_{3} $ 
+
+\subsubsection{Mix nibbles step}
+Let the current state be $c_{0} c_{1} c_{2} c_{3} c_{4} c_{5} c_{6} c_{7} c_{8} c_{9} c_{10} c_{11} c_{12} c_{13} c_{14} c_{15}$\\
+Now first this state is divided into two parts \\
+$ c_{0} c_{1} c_{2} c_{3} c_{4} c_{5} c_{6} c_{7} $ and $c_{8} c_{9} c_{10} c_{11} c_{12} c_{13} c_{14} c_{15}$ \\
+We denote each of this part as a single column matrix with each element as 8-bit($c_{i}|c_{i+1}$) \\. The next state in the algorithm is obtained by multiplying(details needed ) this columns with a fixed matrix.This alogorithm is same as the MixColumns step in AES(Rijndael).All the steps in the round function are nibble wise operation except MixColumns which is byte wise. This operation is performed in GF(8) with modulo polynomial as $x^{8} + x^{4} + x^{3} + x + 1$.\\ \\
+$\begin{bmatrix}
+s^{i+1}_{0} | s^{i+1}_{1}\\
+s^{i+1}_{2} | s^{i+1}_{3}\\
+s^{i+1}_{4} | s^{i+1}_{5}\\
+s^{i+1}_{6} | s^{i+1}_{7}
+\end{bmatrix}=
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\begin{bmatrix}
+c_{0}|c_{1}\\
+c_{2}|c_{3}\\
+c_{4}|c_{5}\\
+c_{6}|c_{7}
+\end{bmatrix}  $ ,
+$\begin{bmatrix}
+s^{i+1}_{8} | s^{i+1}_{9}\\
+s^{i+1}_{10} | s^{i+1}_{11}\\
+s^{i+1}_{12} | s^{i+1}_{13}\\
+s^{i+1}_{14} | s^{i+1}_{15}
+\end{bmatrix}=
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\begin{bmatrix}
+c_{8}|c_{9}\\
+c_{10}|c_{11}\\
+c_{12}|c_{13}\\
+c_{14}|c_{15}
+\end{bmatrix}  $\\ \\
+Thus we obtain the next state 
+$ s^{i+1}_{0}  s^{i+1}_{1}
+s^{i+1}_{2}  s^{i+1}_{3}
+s^{i+1}_{4}  s^{i+1}_{5}
+s^{i+1}_{6}  s^{i+1}_{7}
+s^{i+1}_{8}  s^{i+1}_{9}
+s^{i+1}_{10}  s^{i+1}_{11}
+s^{i+1}_{12}  s^{i+1}_{13}
+s^{i+1}_{14}  s^{i+1}_{15} $
 
 
 \section{Key Schedule}
@@ -119,25 +174,310 @@ We call the original key as master key and denote it as $mk$. It will be of 64/8
 \item Denote $sk_{i}$ as a tuple of bytes - (x0 x1 x2 x3 x4 x5 x6 x7) \\
 Divide the tuple into two equal parts and call them a and b 
 
-a - (x0 x1 x2 x3) \\
-b - (x4 x5 x6 x7) \\
+a - ($ x_{0}$ $x_{1}$ $x_{2}$ $x_{3}$) \\
+b - ($x_{4}$ $x_{5}$ $x_{6}$ $x_{7}$) \\
 
 \item Now Perform one byte left circular shift to both a and b
 
-a' = (x1 x2 x3 x0) \\
-b' = (x7 x4 x5 x6) \\
+$a'$ = ($x_{1}$ $x_{2}$ $x_{3}$ $x_{0}$) \\
+$b'$  = ($x_{7}$ $x_{4}$ $x_{5}$ $x_{6}$) \\
 
-\item Swap a' and b' i.e a'' = b' and b''=a' \\
+\item Swap $a'$ and $b'$  i.e $a''$ = $b'$  and b''=$a'$ \\
 
-\item Now let a'' = (y0 y1 y2 y3) \\
-and b'' = (z0 z1 z2 z3) \\
+\item Now let $a''$ = ($y_{0}$ $y_{1}$ $y_{2}$ $y_{3}$) \\
+and $b''$ = ($z_{0}$ $z_{1}$ $z_{2}$ $z_{3}$) \\
 
-We will Xor the round counter i with 3rd byte of a'' and pass 2nd and 3rd byte of b'' through the KLIEN S-BOX and then a''|b'' will become the next subkey \\
+We will Xor the round counter i with 3rd byte of $a''$ and pass 2nd and 3rd byte of $b''$ through the KLIEN S-BOX and then $a''$|$b''$ will become the next subkey \\
 $sk_{i+1}$ = (y0 y1 $ y2 \oplus R_i $ y3 z0 Sbox(z1) Sbox(z2) z4)\\
 \end{itemize}
 
-\section{Main Result}
-\label{sec:main}
+
+\section{Various Attacks on KLEIN}
+Before we proceed to the analysis of attacks done on KLEIN, let us analyze some properties of SBOX.\\
+The DDT(Differential Distribution Table) of SBOX is written below:
+\begin{center}
+    
+
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+$\Delta_{In}|\Delta_{Out}$ &0&1&2&3&4&5&6&7&8&9&10&11&12&13&14&15 \\
+\hline
+0&16& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0 \\
+\hline
+1&0& 0& 0& 4& 2& 0& 2& 0& 2& 0& 0& 2& 0& 0& 2& 2 \\
+\hline
+2&0& 0& 0& 0& 0& 4& 0& 0& 0& 0& 2& 2& 0& 4& 2& 2 \\
+\hline
+3&0& 4& 0& 2& 2& 0& 0& 0& 0& 0& 2& 0& 0& 2& 4& 0 \\
+\hline
+4&0& 2& 0& 2& 2& 0& 2& 0& 0& 2& 0& 2& 0& 2& 0& 2 \\
+\hline
+5&0& 0& 4& 0& 0& 2& 0& 2& 2& 0& 2& 4& 0& 0& 0& 0 \\
+\hline
+6&0& 2& 0& 0& 2& 0& 4& 0& 2& 0& 2& 2& 2& 0& 0& 0 \\
+\hline
+7&0& 0& 0& 0& 0& 2& 0& 2& 2& 2& 0& 0& 2& 0& 4& 2 \\
+\hline
+8&0& 2& 0& 0& 0& 2& 2& 2& 2& 2& 0& 2& 0& 0& 0& 2 \\
+\hline
+9&0& 0& 0& 0& 2& 0& 0& 2& 2& 0& 0& 2& 2& 2& 2& 2 \\
+\hline
+10&0& 0& 2& 2& 0& 2& 2& 0& 0& 0& 4& 0& 2& 0& 2& 0 \\
+\hline
+11&0& 2& 2& 0& 2& 4& 2& 0& 2& 2& 0& 0& 0& 0& 0& 0 \\
+\hline
+12&0& 0& 0& 0& 0& 0& 2& 2& 0& 2& 2& 0& 4& 2& 0& 2 \\
+\hline
+13&0& 0& 4& 2& 2& 0& 0& 0& 0& 2& 0& 0& 2& 2& 0& 2 \\
+\hline
+14&0& 2& 2& 4& 0& 0& 0& 4& 0& 2& 2& 0& 0& 0& 0& 0 \\
+\hline
+15&0& 2& 2& 0& 2& 0& 0& 2& 2& 2& 0& 0& 2& 2& 0& 0 \\
+\hline
+\end{tabular}
+\end{center}
+The maximum differential probability is KLEIN's SBOX is 4/16 i.e 1/4 and some of the transitions leading to it are $(\Delta_{In},\Delta_{Out})$= (1,4),(3,1) etc.\\
+If we the input to sbox can be represented as $x=x_{0}||x_{1}||x_{2}||x_{3}$ and the output is represented as $y = y_{0}||y_{1}||y_{2}||y_{3}$, then the ANF represnatio of KLEIN's SBOX is given as :\\
+
+\begin{math}
+y_{0} = 1+ x_{0} + x_{1} + x_{3} + x_{0} x_{2} + x_{1} x_{2} + x_{1} x_{3}+ x_{0}x_{1}x_{2}+  x_{0}x_{1}x_{3}\\
+y_{1}= 1+ x_{0}+ x_{2}+ x_{3}+ x_{1}x_{2}+ x_{1}x_{3}+ x_{2}x_{3}+ x_{0}x_{1}x_{3} \\
+y_{2}= 1+ x_{1}+ x_{2}+ x_{0}x_{2}+ x_{1}x_{2}+ x_{0}x_{3}+ x_{0}x_{1}x_{2}+ x_{0}x_{2}x_{3}+ x_{1}x_{2}x_{3}\\
+y_{3} = x_{1}+ x_{3}+ x_{0}x_{2}+ x_{0}x_{3}+ x_{0}x_{1}x_{3}+ x_{1}x_{2}x_{3} \\
+\end{math}
+
+\subsection{}
+\subsubsection{}
+In the input of some cryptographic function, Neutral bit is nothing but a bit with respect to a given differential (characteristic) when flipping this bit in an input conforming to the differential (characteristic) leads to a new input also conforming to that differential.These neural bits are used to reduce the cost of finding values conforming to the differential.In KLEIN, we have observed that the first two and last two input bytes in a plaintext block are neutral with respect to the first two rounds’ collection of characteristics.\\
+
+In the first round, the bytes first pass through the Sbox, then after RotateNibbles they form the 4-byte half of the state that is inactive in MixNibbles.Further in the second round, our neutral bytes first pass through the Sbox still independently of the other bytes and of the difference—then they are mixed with the other bytes within MixNibbles.Since the conformance of the output of MixNibbles only depends on the active nibbles, our bytes remain neutral up to this stage, in the third round, values entering the Sbox depend on the first and last two input bytes; these are thus not neutral for the third round.Thus with a given pair of inputs satisfying the truncated differential, $2^{32}$ pairs
+conforming to the first two rounds can be obtained by varying the first two and last two input bytes.\\
+
+\subsubsection{}
+Based on our 6-round differential characteristic a distinguisher for 7-round KLEIN-64 is constructed. The main point here is that for a pair conforming to the 6-round differential, the SubNibbles of round 7 has all higher nibbles inactive. Although MixNibbles may activate arbitrary nibbles at round 7, one can determine the differences before MixNibbles given only the output after 7 rounds this is because of the linearity of MixNibbles. In other words, one can check that only lower nibbles were active after SubNibbles. A conforming pair is expected to be detected after $2^{28}$ observations, against $2^{32}$ ideally, which constitutes the distinguisher. The distinguisher is actually more powerful: once a conforming pair is found in $2^{28}$, one can produce approximately 8 other pairs with negligible extra cost.\\
+
+
+\subsubsection{}
+The distinguisher for 7 Lead to finding one (and possibly many) conforming pairs at a lower cost than for an ideal cipher. For 8 rounds, the distinguisher consists in finding several pairs (rather than one) with reduced complexity. Firstly, one collects approximately $2^{33.90}$ pairs, and records the ones that conform to the output difference.Approximately 4 pairs satisfying the difference by chance are record , and one conforming to the collection of characteristics.It is observed that the conforming pair can be identified using the neutral bits. It follows that by testing $2^{32}$ derived pairs for each of the 5 pairs obtained initially, one new conforming pair is expected for the pairs obtained by chance and about 8 new pairs for the one conforming to the characteristics.Therefore, with about $2^{33.90}$ + 4 × $2^{32}$ ≈ $2^{35}$, one expects to find twice more conforming pairs than ideally.\\
+
+\subsubsection{}
+The key-recovery attack for 7 rounds starts by using the distinguisher of 5.2 to
+detect the pair satisfying the 6-round differential.For this task we exploit the invertibility of the final MixNibbles and RotateNibbles to determine the output differences of each nibble after the last SubNibbles. Then, the attack tries values of the lower nibbles the linear combinations of
+key bits and pass them through the Sbox; the difference obtained is inverted
+through MixColumn; if the difference obtained has only lower nibbles active, then
+the guess is considered as possible. Since the inverse MixNibbles produces lower only active nibbles given lower only active nibble with probability $2^{−3}$, The Search space is reduced from $2^{16}$
+to $2^{13}$ for each of the two MixColumn instances.In total cost of key-recovery to gets reduced to $2^{58}$ trials. The attack always succeeds because we are trying all candidate keys in the $2^{58}$ trials.This is improved further using several conforming pairs. Using neutral
+bits, one can generate 8 more pairs in $2^27$ where only 6 are sufficient to
+identify the correct combination of key bits, by taking the intersection of the $2^{13}$
+element sets for each conforming pair. One can thus recover the 32 bits corresponding to the XOR between the lower nibbles of the ciphertexts, there after the last SubNibbles. Since these bits are a linear combination of the key bits, it is equivalent to recovering 32 key bits. The 32 key bits left can then be bruteforced in $2^32$.The attack thus recovers the 64-bit key with less than than $2^{33}$ encryptions.\\
+
+if we extend the strategy of the 7-round attack to 8 rounds, mentioned as in in §§4.3 to detect the conforming pairs leads to “false alarms” (i.e. values conforming to the input/output differential
+but not necessarily to this context). Thus with less than $2^{34}$ encryptions, one thus can identify a high probability conforming pair.Using neutral bits, one expects to produce almost 8 other conforming pairs after $2^{32}$ trials which is more than enough to identify with certainty 32 bits
+of the last subkey. Overall, the 64 bits of the last subkey can be found with complexity less than
+$2^{35}$ encryptions.\\
+
+
+
+
+\subsection{Cryptanalysis of Reduced-Round KLEIN Block Cipher}
+The weakness present in the Rotate Nibbles and Mix columns step is exploited here in this attack.\\
+Firstly, a 6 round truncated differential distinguisher with $2^{-29}$ is made.Using this as base, an 8 Round distinguisher is constructed.\\
+Lets have look at few terminologies used in this attack:\\
+\begin{enumerate}
+    \item $X_{i}$ : The input of the i-th round.
+    \item $\Delta X_{i}$ : The input difference of the i-th round.
+    \item $Y_{i}$ : The input of SubNibbles in the i-th round .
+    \item $\Delta Y_{i}$ : The input difference of SubNibbles in the i-th round .
+    \item $X_{i,j}$ : The j-th nibble of the $X_{i}$ , where j = 0, 1, ...15.
+    \item $sk_{i}$ : The subkey of the i-th round.
+    \item $X || Y$ : The the concatenation of X and Y.
+\end{enumerate}
+The state of encryption: \\
+\begin{center}
+\begin{math}
+\begin{array}{|c|c|c|c|}
+\hline
+0&4&8&12&  
+\hline
+1&5&9&13&
+\hline
+2&6&10&14 & 
+\hline
+3&7&11&15&  
+\hline
+\end{array}
+\end{math}
+\end{center}
+The number in box represents the Nibble numbers of the 64 bit data block.
+
+
+\subsubsection{Truncated Six Round Differential Distinguisher}
+As it is based the limitations of MixColumns and RotateNibbles, few properties and observations are listed.\\
+\textbf{Property 1} As the mix columns operation is same as the one used in Rijndael. We know that the multiplication is done in $GF(8)$ using modulo polynomial m(x)= $x^{8} + x^{4} + x^{3} + x + 1$.\\
+Take a polynomial in $GF(8)$ of the form $f(x) = b^{7} x_{7} + b^{6} x_{6} + b^{5} x_{5} + b^{4} x_{4} + b^{3} x_{3} + b^{2} x_{2} + b^{1} x + b^{0}$.\\
+Result of multiplication of $x$ to $f(x)$ is\\
+$$x * f(x) = (b_{6} b_{5} b_{4} b_{3} b_{2} b_{1} b_{0} 0)\;\; \text{if}\,b_{7}=0$$ 
+$$ x * f(x) = (b_{6} b_{5} b_{4} b_{3} b_{2} b_{1} b_{0} 0) \oplus (00011011) \;\; \text{if} b_{7} = 1$$ 
+\textbf{Lemma1.} If a byte is of the form $0z$, where $z$ is a 4-bit string
+with MSB bit as 0, then $0z$ multiply by $x$ is equal to $0z^{'}$, where $z ^{'}$
+is a 4-bit string.\\
+The following oservations are derived based on above lemma.\\ \\
+\textbf{Observation 1.} 
+\begin{math}
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\text{x}
+\begin{bmatrix}
+0z \\
+00 \\
+00 \\
+00 
+\end{bmatrix} = 
+\begin{bmatrix}
+0z^{'}_{1} \\
+0z^{'}_{2} \\
+0z^{'}_{3} \\
+0z^{'}_{4} 
+\end{bmatrix}
+\end{math} if only if MSB $z$ is 0. \\ \\
+Observation 1 holds with the probability $2^{-1}$, because the only requirement is that the MSB of $z$ must be 0 and the probability of this event to occur is 1/2.\\ \\
+\textbf{Observation 2.} 
+\begin{math}
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\text{x}
+\begin{bmatrix}
+00 \\
+00 \\
+0z_{1} \\
+0z_{2} 
+\end{bmatrix} = 
+\begin{bmatrix}
+0z^{'}_{1} \\
+0z^{'}_{2} \\
+0z^{'}_{3} \\
+0z^{'}_{4} 
+\end{bmatrix}
+\end{math} if only if MSB $z_{1}$ and $z_{2}$ is 0. \\ \\
+Observation 2 holds with the probability $2-2$, because the requirement is that the MSB of $z_{1}$ and $z_{2}$ must be 0 and the probability of this event to occur is (1/2)*(1/2). The reason for this requirment is statete below.\\ \\
+\textbf{Reason}: 
+\begin{math}
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\text{x}
+\begin{bmatrix}
+00 \\
+00 \\
+0z_{1} \\
+0z_{2} 
+\end{bmatrix} = 
+\begin{bmatrix}
+(0z_{1}) \oplus (0z_{2})\\
+3(0z_{1}) \oplus (0z_{2}) \\
+2(0z_{1}) \oplus 3(0z_{2})) \\
+(0z_{1}) \oplus 2(0z_{2}))
+\end{bmatrix}
+\end{math}\\ \\ \\
+for $3(0z_{1}) \oplus (0z_{2})\,,\,2(0z_{1}) \oplus 3(0z_{2}))\; and\; (0z_{1}) \oplus 2(0z_{2}))$ to be of the form $0z$, the MSB's of $z_{1}$ and $z_{2}$ should be equal to 0 according to Lemma1.
+\\ \\
+\textbf{Observation 3}
+\begin{math}
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\text{x}
+\begin{bmatrix}
+0z_{1} \\
+0z_{2} \\
+0z_{3} \\
+0z_{4} 
+\end{bmatrix} = 
+\begin{bmatrix}
+0z^{'}_{1} \\
+0z^{'}_{2} \\
+0z^{'}_{3} \\
+0z^{'}_{4} 
+\end{bmatrix}
+\end{math}
+ if only if MSB's of $z_{1},
+z_{2} ,
+z_{3} \;and\;
+z_{4} $ are 0.\\
+The probability of the above requirement is $2^{-2}$. The proof will be similar to the above reason in observation 2.\\
+\\Based on the above observations, we show that if the input difference of 6-round KLEIN are all zero except the 13-th nibble, after encryption, the first and the third column of state matrix will
+stay 0 with the probability of $2^{−29}$.\\
+This happens because the difference in column will not transfer to other column due to the RotateBits algorithm and above observations. \\ This is the reason for high probability 6-round differential distinguisher.
+\begin{figure}
+    \centering
+    \includegraphics[width= \textwidth]{images/6roundattack.png}
+    \caption{6 Round Distinguisher}
+    \label{fig:6distinguisher}
+\end{figure}
+The structure of 6round distinguisher is clearly displayed in Figure \ref{fig:6distinguisher}.\\
+\subsubsection{Truncated Differential Analysis of 8-Round KLEIN-64}
+The 8 round distinguisher is constructed by adding an extra layer at the top and bottom of the 6 round distinguisher.\\
+As this is CPA(chosen plain text) attack, we choose plain text pairs such a way that input difference to the next round is all zero except the 13-th nibble. We actually obtain the required input pairs of first round by reverse tracing the single active nibble that should be active at the end of the round.\\
+
+\begin{center}
+\begin{math}
+MC^{-1} *  
+\begin{bmatrix}
+00 \\
+00 \\
+01 \\
+00
+\end{bmatrix}
+=
+\begin{bmatrix}
+0d \\
+0b \\
+0e \\
+09
+\end{bmatrix}
+\end{math}    
+\end{center}
+This is the state of last column that we require after the Rotate bits.The further structure of the first Round is shown in Figure \ref{fig:8distinguisher}.
+\begin{figure}
+    \centering
+    \includegraphics[width= \textwidth]{images/first round of 8 round distinguisher.png}
+    \caption{First Round of the 8 Round Distinguisher}
+    \label{fig:8distinguisher}
+\end{figure}\\ \\
+\textbf{ The Steps and Analysis Procedure}\\ \\
+\textbf{Step1.} We will choose the input plaintexts in such a way that, all nibbles have some fixed values except four nibbles $X_{1,1} , X_{1,3} , X_{1,13} , X_{1,15}$. If we fix the values and change the values only in these 4 nibbles, that is called one structure. There are $2^{16}$ possible plain texts in one structure.\\
+We can form nC2 i.e $(2^{16} \text{x} (2^{16} - 1))/2 = 2^{31}$ plain text pairs from those $2^{16} $ plain texts.\\ If we took m structures then we will have $2^{16}m$ plain texts and $2^{31}m$ pairs.\\ \\
+\textbf{Step 2.} By Guessing the values of the subkey nibbles $sk_{1,1} , sk_{1,3} , sk_{1,13} , sk_{1,15}$ we should make sure that $\Delta SubNibbles(X_{1,1} \oplus sk_{1,1} ) = 0e, \Delta SubNibbles(X_{1,3} \oplus sk_{1,3} ) = 09, \Delta SubNibbles(X_{1,13} \oplus sk_{1,13} ) =
+0d\; and \;\Delta S(X_{1,15} \oplus sk_{1,15} ) = 0b.$ The probability of this is $2^{-16}$ as we are fixing values of 4 particular nibbles, so the expected number of confirming pairs is $2^{31} \;\text{x}\; m\; \text{x} \;2^{-16} = 2^{15} m$. \\ \\
+\textbf{Step 3.} Now After Encrypting all the remaining $2^{15}m$ pairs. Check whether
+the first and the third columns of the output difference of $MC^{-1}$ in the last
+round are zero. If not, discard the key guess. The expected number of such confirming pairs is $2^{15} \;*\; m \;*\; (2 ^{-16})^{2} = 2^{-17}m$. Now we should use meet in the middle technique. \\
+\textbf{Step 4}. For the obtained confirming pairs from previous step,  guess the value of the subkey $sk_{9,j}$, j = 0, 1, \ldots, 7 to inverse the SubNibbles step and find input difference of 8-th round, i.e $\Delta X_{8,j}$ , j = 0, 1, \ldots, 7. \\ \\
+\textbf{Step 5.} Now, reverse the MixColumns step i.e $MC^{-1}$ on $\Delta X_{8}$ and verify whether the first column difference is zero and also the MSB of second column should be all 1 or all 0. If not, discard the key guess.The expected confirming pairs is $2^{17}\;*\;m\;*\;2^{-7} = 2^{-24}m$ as the probability of the above event is $2^{-7}$.\\ \\
+\textbf{Step 6.} Guess the remaining 16 bits key in the similar way by verifying third and fourth columns.\\ \\
+\textbf{Success Probability and Complexity} \\ \\
+All the above analysis is for calculating probability for any random pair of plain text pair confirming the differential with a random key.\\
+So the the no.of plaintext pairs that become a confirming pairs under a wrong key are $2^{-24}\,*\,2^{16} = 2^{-8}$ if m=$2^{16}$.\\
+The no.of plain text pairs that become a confirming pair under a correct key are $2^{15}\,*\,2^{16}\,*\,2^{-29} = 2^{2}$ for m=$2^{16}$, as the probability of truncated differential is $2^{-29}$.\\ \\.
+\textbf{Time and Space Complexity} \\
+
+
+
+% \label{sec:main}
 
 %%%% 8. BILBIOGRAPHY %%%%
 \bibliographystyle{alpha}
@@ -146,6 +486,7 @@ $sk_{i+1}$ = (y0 y1 $ y2 \oplus R_i $ y3 z0 Sbox(z1) Sbox(z2) z4)\\
 % - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
 % - Use bilbio.bib for additional references not in the cryptobib database.
 %   If possible, take them from DBLP.
+
 
 \end{document}
 
