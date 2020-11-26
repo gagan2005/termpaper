@@ -45,7 +45,7 @@
 \keywords{Block Cipher \and Low Resource Implementation \and  Ubiquitous computing. }
 %%%% 6. ABSTRACT %%%%
 \begin{abstract}
-  ---------------------------------------------------- Lorem
+In the day to day life, the usage of IoT is increasing exponentially.Parallely the need of the security will also increase as the user base of Ubiquitous computing increases. As most of the IoT applications involve the usage of low end devices like sensors, RFIDs etc the security algorithms should be suitable the resources available to them. KLEIN is one of the lightweight cipher which is designed mainly for sensors. In Section 1, the need of lightweight cipher like KLEIN is described.In Section 2 and 3 design decisions and specification the KLEIN cipher are mentioned. Before wide implementation of any cipher, a good amount of time should be spent doing cryptanalysis on it. In Section 4, various attacks like Differential analysis, Round reduced analysis and Integral cryptanalysis is done.
 \end{abstract}
 
 
@@ -167,7 +167,7 @@ s^{i+1}_{12}  s^{i+1}_{13}
 s^{i+1}_{14}  s^{i+1}_{15} $
 
 
-\section{Key Schedule}
+\subsubsection{Key Schedule}
 We call the original key as master key and denote it as $mk$. It will be of 64/80/96 bit for  KLIEN 64/80/96. As a result of key scheduling algorthm 8/10/12  subkeys with length same as master key will be generated for KLIEN 64/80/96. Without LOG we will talk about key scheduling of KLEIN 64 \\
 
 \begin{itemize}
@@ -285,7 +285,7 @@ $2^{35}$ encryptions.\\
 
 \subsection{Cryptanalysis of Reduced-Round KLEIN Block Cipher} \cite{reduced_round}
 The weakness present in the Rotate Nibbles and Mix columns step is exploited here in this attack.\\
-Firstly, a 6 round truncated differential distinguisher with $2^{-29}$ is made.Using this as base, an 8 Round distinguisher is constructed.\\
+Firstly, a 6 round truncated differential distinguisher with $2^{-29}$ is made.Using this as base, an 8 Round distinguisher is constructed.One of the assumption is they will be having access to round wise outputs.\\
 Lets have look at few terminologies used in this attack:\\
 \begin{enumerate}
     \item $X_{i}$ : The input of the i-th round.
@@ -427,7 +427,7 @@ This happens because the difference in column will not transfer to other column 
 \begin{figure}
     \centering
     \includegraphics[width= \textwidth]{images/6roundattack.png}
-    \caption{6 Round Distinguisher}
+    \caption{6 Round Distinguisher \cite{reduced_round}}
     \label{fig:6distinguisher}
 \end{figure}
 The structure of 6-round distinguisher is clearly displayed in Figure \ref{fig:6distinguisher}.\\
