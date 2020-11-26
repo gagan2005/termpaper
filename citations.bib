@@ -1,0 +1,87 @@
+@InProceedings{KATAN,
+author="De Canni{\`e}re, Christophe
+and Dunkelman, Orr
+and Kne{\v{z}}evi{\'{c}}, Miroslav",
+editor="Clavier, Christophe
+and Gaj, Kris",
+title="KATAN and KTANTAN --- A Family of Small and Efficient Hardware-Oriented Block Ciphers",
+booktitle="Cryptographic Hardware and Embedded Systems - CHES 2009",
+year="2009",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="272--288",
+abstract="In this paper we propose a new family of very efficient hardware oriented block ciphers. The family contains six block ciphers divided into two flavors. All block ciphers share the 80-bit key size and security level. The first flavor, KATAN, is composed of three block ciphers, with 32, 48, or 64-bit block size. The second flavor, KTANTAN, contains the other three ciphers with the same block sizes, and is more compact in hardware, as the key is burnt into the device (and cannot be changed).",
+isbn="978-3-642-04138-9"
+}
+
+@InProceedings{PRESENT,
+author="Bogdanov, A.
+and Knudsen, L. R.
+and Leander, G.
+and Paar, C.
+and Poschmann, A.
+and Robshaw, M. J. B.
+and Seurin, Y.
+and Vikkelsoe, C.",
+editor="Paillier, Pascal
+and Verbauwhede, Ingrid",
+title="PRESENT: An Ultra-Lightweight Block Cipher",
+booktitle="Cryptographic Hardware and Embedded Systems - CHES 2007",
+year="2007",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="450--466",
+abstract="With the establishment of the AES the need for new block ciphers has been greatly diminished; for almost all block cipher applications the AES is an excellent and preferred choice. However, despite recent implementation advances, the AES is not suitable for extremely constrained environments such as RFID tags and sensor networks. In this paper we describe an ultra-lightweight block cipher, present. Both security and hardware efficiency have been equally important during the design of the cipher and at 1570 GE, the hardware requirements for present are competitive with today's leading compact stream ciphers.",
+isbn="978-3-540-74735-2"
+}
+
+
+@InProceedings{KLEIN,
+author="Gong, Zheng
+and Nikova, Svetla
+and Law, Yee Wei",
+editor="Juels, Ari
+and Paar, Christof",
+title="KLEIN: A New Family of Lightweight Block Ciphers",
+booktitle="RFID. Security and Privacy",
+year="2012",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="1--18",
+abstract="Resource-efficient cryptographic primitives are essential for realizing both security and efficiency in embedded systems like RFID tags and sensor nodes. Among those primitives, lightweight block cipher plays a major role as a building block for security protocols. In this paper, we describe a new family of lightweight block ciphers named KLEIN, which is designed for resource-constrained devices such as wireless sensors and RFID tags. Compared to related proposals, KLEIN has advantage in the software performance on legacy sensor platforms, while its hardware implementation can be compact as well.",
+isbn="978-3-642-25286-0"
+}
+
+@InProceedings{8round,
+author="Aumasson, Jean-Philippe
+and Naya-Plasencia, Mar{\'i}a
+and Saarinen, Markku-Juhani O.",
+editor="Bernstein, Daniel J.
+and Chatterjee, Sanjit",
+title="Practical Attack on 8 Rounds of the Lightweight Block Cipher KLEIN",
+booktitle="Progress in Cryptology -- INDOCRYPT 2011",
+year="2011",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="134--145",
+abstract="KLEIN is a family of lightweight block ciphers presented at RFIDSec 2011 that combines a 4-bit Sbox with Rijndael's byte-oriented MixColumn. This approach allows compact implementations of KLEIN in both low-end software and hardware. This paper shows that interactions between those two components lead to the existence of differentials of unexpectedly high probability: using an iterative collection of differential characteristics and neutral bits in plaintexts, we find conforming pairs for four rounds with amortized cost below 212 encryptions, whereas at least 230 was expected by the preliminary analysis of KLEIN. We exploit this observation by constructing practical (≈{\thinspace}235-encryption), experimentally verified, chosen-plaintext key-recovery attacks on up to 8 rounds of KLEIN-64---the instance of KLEIN with 64-bit keys and 12 rounds.",
+isbn="978-3-642-25578-6"
+}
+
+@InProceedings{reduced_round,
+author="Yu, Xiaoli
+and Wu, Wenling
+and Li, Yanjun
+and Zhang, Lei",
+editor="Wu, Chuan-Kun
+and Yung, Moti
+and Lin, Dongdai",
+title="Cryptanalysis of Reduced-Round KLEIN Block Cipher",
+booktitle="Information Security and Cryptology",
+year="2012",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="237--250",
+abstract="KLEIN is a lightweight block cipher proposed in RFIDSec 2011 which combines 4-bit S-box with Rijndael's byte-oriented MixColumn. In this paper, we first investigate the security of KLEIN against truncated differential analysis. We construct a 6-round truncated differential distinguisher based on a careful observation about the characteristic of KLEIN round function. With the help of this new distinguisher, we give a truncated differential analysis of 8-round KLEIN-64 with the data complexity of 232 and time complexity of 246.8 encryptions. Furthermore, we study the security of KLEIN against integral analysis and present an integral analysis of 7-round KLEIN-64 and 8-round KLEIN-80 using a 5-round distinguisher, which is constructed by utilizing higher-order integral and higher-order differential properties.",
+isbn="978-3-642-34704-7"
+}
