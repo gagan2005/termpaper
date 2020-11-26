@@ -1,0 +1,65 @@
+\section{Cipher Specifications}
+
+\begin{frame}{Design rationale}
+\begin{enumerate}
+    \item KLEIN is collection of ciphers of different key length(64, 80, and 96) and fixed 64 bit block length.We shall denote these ciphers as KLEIN-64/80/96 based on their key lengths.
+    \item We know that block cipher's security and implementation cost mainly depends on the key size and block size. Keeping in mind that lightweight ciphers are used in resource constrained machines like sensors, RFIDs, the block length is decided to be 64 bits as high-throughput is not expected in these devices as large block lengths and larger keys are unnecessary.
+    \item As 64 bit key length might be little vulnerable if we consider attacks based on pre-computation and large storage capacities, it is suggested to use KLEIN-64 for message authentication codes and hash functions.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Optimal Platform}
+\begin{enumerate}
+    \item Generally light weight ciphers are optimized for hardware implementation as they are used in RFID tags and smart cards.
+    \item But if a system can support the computation and memory requirements of the software implementation, the costs of manufacturing and maintenance will reduce drastically as we can simply update the implementation of the cipher by simply installing a software update.
+    \item Software implementation is more flexible.
+    \item Both the software and hardware implementations are lightweight.
+\end{enumerate}
+\end{frame}
+\begin{frame}{Structure of KLEIN}
+\begin{enumerate}
+    \item KLEIN is made of Substitution-Permutation-Network(SPN) which is also used in popular ciphers like AES and PRESENT.
+    \item By taking into the consideration of security margin and the asymmetric iteration we chose 12/16/20 rounds for KLIEN-64/80/96 respectively.
+\end{enumerate}
+\begin{algorithm}[H]
+\SetAlgoLined
+$sk^{1}\gets KEY$; \\
+STATE $\gets$ PLAINTEXT;\\
+\For{$i=1$ \KwTo $N_{R}$ }{
+    $AddRoundKey(\text{STATE}, sk i );$\\
+$SubN ibbles(\text{STATE});$ \\
+$RotateN ibbles(\text{STATE});$ \\
+$MixN ibbles(\text{STATE});$ \\
+$sk_{i+1} = KeySchedule(sk_{i} , i);$ \\
+ }
+ CIPHERTEXT $\gets AddRoundKey(\text{STATE}, sk^{N_{R}+1} )$;
+ \caption{KLEIN CIPHER}
+\end{algorithm}
+\end{frame}
+
+\begin{frame}{Round Transformation}
+\textbf{SubNibbles} \\
+Before this step, the corresponding round key will be xor-ed with the input . The obtained resultant state is passed to subnibbles where the state is divided into 16 4-bit nibbles and given as input to the 4 x 4 Involutive permutation. \\ \\
+Involutiveness of S-box is helpful to decrease the implementation costs of calculating its inverse and also the need of protection against side channel attacks is removed as we only need to protect single S-box.
+\begin{center}\begin{math}
+\begin{array}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Input &0 &1 &2 &3 &4 &5 &6 &7 &8 &9 &A &B &C & D& E& F&  
+\hline
+Output &7 &4 &A &9 &1 &F &B &0 &C &3 &2 &6 &8 &E &D &5 & 
+\hline
+\end{array}
+\end{math}
+\end{center}
+\end{frame}
+
+\begin{frame}
+It also satisfies following properties: \\
+\begin{enumerate}
+\item  It should not contain any fixed points i.e S(x)$\neq$x, where  $x \in \mathbb{F}^{4}_{2} $.
+\item For any non-zero input diff($\Delta_{I}$) and output diff($\Delta_{O}$) that belong to  $\mathbb{F}^{4}_{2} $, It should follow:
+$$ \#\{x \in \mathbb{F}^{4}_{2} | S(x) \oplus S(x \oplus \Delta_{I} ) = \Delta_{O} \} \leq 4$$.
+Furthermore, if $wt(\Delta_{I} ) = wt(\Delta{O} )=1$, where $wt(X)=\sum_{i}X_{i}\;$($X_{i}$ is ith bit of X) , we have
+$$\#\{x \in \mathbb{F}^{4}_{2} |S(x) + S(x + \Delta_{I} ) = \Delta_{O} \} \leq 2$$.
+\end{enumerate}
+\end{frame}

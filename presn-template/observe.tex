@@ -1,0 +1,205 @@
+\section{Observations}
+
+\begin{frame}
+The DDT(Differential Distribution Table) of SBOX is written below:\\ \\
+\begin{center}
+\scalebox{0.7}{ 
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+$\Delta_{In}|\Delta_{Out}$ &0&1&2&3&4&5&6&7&8&9&10&11&12&13&14&15 \\
+\hline
+0&16& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0 \\
+\hline
+1&0& 0& 0& 4& 2& 0& 2& 0& 2& 0& 0& 2& 0& 0& 2& 2 \\
+\hline
+2&0& 0& 0& 0& 0& 4& 0& 0& 0& 0& 2& 2& 0& 4& 2& 2 \\
+\hline
+3&0& 4& 0& 2& 2& 0& 0& 0& 0& 0& 2& 0& 0& 2& 4& 0 \\
+\hline
+4&0& 2& 0& 2& 2& 0& 2& 0& 0& 2& 0& 2& 0& 2& 0& 2 \\
+\hline
+5&0& 0& 4& 0& 0& 2& 0& 2& 2& 0& 2& 4& 0& 0& 0& 0 \\
+\hline
+6&0& 2& 0& 0& 2& 0& 4& 0& 2& 0& 2& 2& 2& 0& 0& 0 \\
+\hline
+7&0& 0& 0& 0& 0& 2& 0& 2& 2& 2& 0& 0& 2& 0& 4& 2 \\
+\hline
+8&0& 2& 0& 0& 0& 2& 2& 2& 2& 2& 0& 2& 0& 0& 0& 2 \\
+\hline
+9&0& 0& 0& 0& 2& 0& 0& 2& 2& 0& 0& 2& 2& 2& 2& 2 \\
+\hline
+10&0& 0& 2& 2& 0& 2& 2& 0& 0& 0& 4& 0& 2& 0& 2& 0 \\
+\hline
+11&0& 2& 2& 0& 2& 4& 2& 0& 2& 2& 0& 0& 0& 0& 0& 0 \\
+\hline
+12&0& 0& 0& 0& 0& 0& 2& 2& 0& 2& 2& 0& 4& 2& 0& 2 \\
+\hline
+13&0& 0& 4& 2& 2& 0& 0& 0& 0& 2& 0& 0& 2& 2& 0& 2 \\
+\hline
+14&0& 2& 2& 4& 0& 0& 0& 4& 0& 2& 2& 0& 0& 0& 0& 0 \\
+\hline
+15&0& 2& 2& 0& 2& 0& 0& 2& 2& 2& 0& 0& 2& 2& 0& 0 \\
+\hline
+\end{tabular}
+}
+ \end{center}
+ The maximum differential probability is KLEIN's SBOX is 4/16 i.e 1/4 and some of the transitions leading to it are $(\Delta_{In},\Delta_{Out})$= (1,4),(3,1) etc.\\
+\end{frame}
+
+\begin{frame}{Attacks on KLEIN cipher}
+\textbf{Round Reduced Attack}\\
+The weakness present in the Rotate Nibbles and Mix columns step is exploited here in this attack.\\
+Firstly, a 6 round truncated differential distinguisher with $2^{-29}$ is made.Using this as base, an 8 Round distinguisher is constructed.One of the assumption is they will be having access to round wise outputs.\\
+Lets have look at few terminologies used in this attack:\\
+\begin{enumerate}
+    \item $X_{i}$ : The input of the i-th round.
+    \item $\Delta X_{i}$ : The input difference of the i-th round.
+    \item $Y_{i}$ : The input of SubNibbles in the i-th round .
+    \item $\Delta Y_{i}$ : The input difference of SubNibbles in the i-th round .
+    \item $X_{i,j}$ : The j-th nibble of the $X_{i}$ , where j = 0, 1, ...15.
+    \item $sk_{i}$ : The subkey of the i-th round.
+    \item $X || Y$ : The the concatenation of X and Y.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+The state of encryption: \\
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+0&4&8&12\\
+\hline
+1&5&9&13\\
+\hline
+2&6&10&14 \\
+\hline
+3&7&11&15\\  
+\hline
+\end{tabular}
+\end{center}
+The number in box represents the Nibble numbers of the 64 bit data block.
+\textbf{Some properties and observations of KLEIN cipher}\\
+\textbf{Lemma1.} If a byte is of the form $0z$, where $z$ is a 4-bit string
+with MSB bit as 0, then $0z$ multiply by $x$ is equal to $0z^{'}$, where $z ^{'}$
+is a 4-bit string.\\
+The following oservations are derived based on above lemma.\\ \\
+
+\end{frame}
+
+\begin{frame}
+    \textbf{Observation 1.} 
+\begin{math}
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\text{x}
+\begin{bmatrix}
+0z \\
+00 \\
+00 \\
+00 
+\end{bmatrix} = 
+\begin{bmatrix}
+0z^{'}_{1} \\
+0z^{'}_{2} \\
+0z^{'}_{3} \\
+0z^{'}_{4} 
+\end{bmatrix}
+\end{math} if only if MSB $z$ is 0. \\ \\
+\textbf{Observation 2.} 
+\begin{math}
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\text{x}
+\begin{bmatrix}
+00 \\
+00 \\
+0z_{1} \\
+0z_{2} 
+\end{bmatrix} = 
+\begin{bmatrix}
+0z^{'}_{1} \\
+0z^{'}_{2} \\
+0z^{'}_{3} \\
+0z^{'}_{4} 
+\end{bmatrix}
+\end{math} if only if MSB $z_{1}$ and $z_{2}$ is 0. \\ \\
+\textbf{Observation 3}
+\begin{math}
+\begin{bmatrix}
+2&3&1&1\\
+1&2&3&1\\
+1&1&2&3\\
+3&1&1&2
+\end{bmatrix}
+\text{x}
+\begin{bmatrix}
+0z_{1} \\
+0z_{2} \\
+0z_{3} \\
+0z_{4} 
+\end{bmatrix} = 
+\begin{bmatrix}
+0z^{'}_{1} \\
+0z^{'}_{2} \\
+0z^{'}_{3} \\
+0z^{'}_{4} 
+\end{bmatrix}
+\end{math}
+ if only if MSB's of $z_{1},
+z_{2} ,
+z_{3} \;and\;
+z_{4} $ are 0.\\
+\end{frame}
+\begin{frame}{Truncated Six Round Differential Distinguisher}
+Based on the above observations, we show that if the input difference of 6-round KLEIN are all zero except the 13-th nibble, after encryption, the first and the third column of state matrix will stay 0 with the probability of $2^{-29}$.\\
+This happens because the difference in column will not transfer to other column due to the RotateBits algorithm and above observations. \\ This is the reason for high probability 6-round differential distinguisher.
+The structure of 6-round distinguisher is clearly displayed in Figure \ref{fig:6distinguisher}.\\
+\end{frame}
+\begin{frame}
+    
+    \begin{figure}
+    \centering
+    \includegraphics[width= 8cm, height= 12cm, keepaspectratio]{./../images/6roundattack.png}
+    \caption{6 Round Distinguisher \cite{reduced_round}}
+    \label{fig:6distinguisher}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Truncated Differential Analysis of 8-Round KLEIN-64}
+The 8 round distinguisher is constructed by adding an extra layer at the top and bottom of the 6 round distinguisher.\\
+As this is CPA(chosen plain text) attack, we choose plain text pairs such a way that input difference to the second round is all zero except the 13-th nibble. We actually obtain the required input pairs of first round by reverse tracing the single nibble that should be active at the end of the round.This process is also diplayed in Figure \ref{fig:8distinguisher} \\
+\begin{figure}
+    \centering
+    \includegraphics[width= \textwidth]{images/4to1_diff.jpg}
+    \caption{First Round of the 8 Round Distinguisher}
+    \label{fig:8distinguisher}
+\end{figure}\\ \\
+\end{frame}
+\begin{frame}
+\textbf{ The Steps and Analysis Procedure}\\ \\
+\textbf{Step1.} We will choose the input plaintexts in such a way that, all nibbles have some fixed values except four nibbles $X_{1,1} , X_{1,3} , X_{1,13} , X_{1,15}$. If we fix the values and change the values only in these 4 nibbles, that is called one structure. There are $2^{16}$ possible plain texts in one structure.\\
+We can form nC2 i.e $(2^{16} \text{x} (2^{16} - 1))/2 = 2^{31}$ plain text pairs from those $2^{16} $ plain texts.\\ If we took m structures then we will have $2^{16}m$ plain texts and $2^{31}m$ pairs.\\ \\ \\ \\
+\textbf{Step 2.} By Guessing the values(trying all possible values)  of the subkey nibbles $sk_{1,1} , sk_{1,3} , sk_{1,13} , sk_{1,15}$ we should make sure that $\Delta SubNibbles(X_{1,1} \oplus sk_{1,1} ) = 0e, \Delta SubNibbles(X_{1,3} \oplus sk_{1,3} ) = 09, \Delta SubNibbles(X_{1,13} \oplus sk_{1,13} ) =
+0d\; and \;\Delta S(X_{1,15} \oplus sk_{1,15} ) = 0b.$ The probability of this is $2^{-16}$ as we are fixing values of 4 particular nibbles, so the expected number of confirming pairs is $2^{31} \;\text{x}\; m\; \text{x} \;2^{-16} = 2^{15} m$. 
+
+\end{frame}
+\begin{frame}
+\textbf{Step 3.} Now take those remaining $2^{15}m$ pairs and encrypt them upto 8 rounds. Then verify the third and first columns output difference of $MC^{-1}$  to zero. If not, discard the key guess. The probability of this event to happen is $(2 ^{-16})^{2}$ so the number of confirming pairs would be $2^{15} \;*\; m \;*\; (2 ^{-16})^{2} = 2^{-17}m$. Now we should use meet in the middle technique. \\ \\ \\
+\textbf{Step 4}. For the obtained confirming pairs from previous step,  guess the value of the subkey $sk_{9,j}$, j = 0, 1, \ldots, 7 to inverse the SubNibbles step and find input difference of 8-th round, i.e $\Delta X_{8,j}$ , j = 0, 1, \ldots, 7. \\ \\
+\end{frame}
+
+\begin{frame}
+    \textbf{Step 5.} Now, reverse the MixColumns step i.e $MC^{-1}$ on $\Delta X_{8}$ and verify whether the first column difference is zero and also the MSB of second column should be all 1 or all 0. If it failed to satisfy the above condition then discard the key guess.The expected confirming pairs is $2^{17}\;*\;m\;*\;2^{-7} = 2^{-24}m$ as the probability of the above event is $2^{-7}$.\\ \\ \\
+\textbf{Step 6.} Guess the remaining 16 bits key in the similar way by verifying third and fourth columns.\\ \\ \\
+\textbf{Time and Space Complexity} \\
+Step 2 takes $2^{16}*2^{16}/8$ one round 64 bit encryptions. In Step 3 it takes $2^{15}*2^{16}*2^{16}*7/8$ encryptions whereas in step 4 it takes $2^{-17}*2^{16}*2^{16}*2^{32}/8$ encryptions are required and step 6 takes about $2^{16}$ encryptions.So overall time complexity $2^{46.8}$ one round 64 bit encryptions.The data complexity is $2^{32}$ plaintexts. Memory complexity is $2^{32}$ 64bit states. 
+
+\end{frame}

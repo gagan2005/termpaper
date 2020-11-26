@@ -51,15 +51,15 @@ In the day to day life, the usage of IoT is increasing exponentially.Parallely t
 
 %%%% 7. PAPER CONTENT %%%%
 \section{Introduction}
-As the development and usage of wireless computing and embedded systems is increasing. we are being increasingly dependent on Ubiquitous computing examples are sensors, RFID tags etc. On these limited resource systems the selection of the security algorithms must be done carefully by taking the implementation costs along with the level of security provided. So the Era of light-weight cryptography is started. Many algorithms with various design strategies were proposed.Few of them were skipjack, KATAN\cite{KATAN}, KTANTAN\cite{KATAN}, PRESENT\cite{PRESENT} etc. skipjack is 8 bit key and 64-bit block length cipher whose basic design is based on unbalanced feistal network. PRESENT is 80/128 bit key and 64 bit block size cipher  which is extremely hardware efficient as the diffusion layer constitutes of only wiring with no algebraic unit.
+As the development and usage of wireless computing and embedded systems is increasing we are being increasingly dependent on Ubiquitous computing examples are sensors, RFID tags etc. On these limited resource systems the selection of the security algorithms must be done carefully by taking the implementation costs along with the level of security provided. So the Era of light-weight cryptography is started. Many algorithms with various design strategies were proposed.Few of them were skipjack, KATAN\cite{KATAN}, KTANTAN\cite{KATAN}, PRESENT\cite{PRESENT} etc. skipjack is 8 bit key and 64-bit block length cipher whose basic design is based on unbalanced feistal network. PRESENT is 80/128 bit key and 64 bit block size cipher  which is extremely hardware efficient as the diffusion layer constitutes of only wiring with no algebraic unit.
 Before wide implementation of a security algorithm, it should be thoroughly analysed. As the result of these analysis an attack on 31 out of 32 rounds of skipjack based on impossible differential is discovered. Also there are weak key attacks and linear attacks on PRESENT.Hence the need of secure lightweight-ciphers did not came to and end. KLEIN is a lightweight block cipher which is mainly invented for devices like sensors which have very less resources. KLEIN \cite{KLEIN} is based on Substitution Permutation Networks. In this paper we will be seeing the working of KLEIN cipher, implementation details and different attacks performed on it along with the comparison of performance and security among few other .
 \section{Design rationale}
 In this section we will be discussing about design rationale chosen when creating KLEIN ciphers.
 \\
 KLEIN is collection of ciphers of different key length(64, 80, and 96) and fixed 64 bit block length.
-We shall denote these ciphers as KLEIN-64/80/96 based on their key lengths.We know that block cipher's security and implementation cost mainly depends on the key size and block size. Keeping in mind that lightweight ciphers are used in resource constrained machines like sensors, RFIDs, the block length is decided to be 64 bits as high-throughput is not expected in these devices as large block lengths and larger keys are unnecessary.As 64 bit key length might be little vulnerable if we consider attacks based on pre-computation and large storage capacities, it is suggested to use KLEIN-64 for message authentication codes and hash functions, Where as KLEIN-80/96 are to be used for encryption in any of the modes of operation.\\
+We shall denote these ciphers as KLEIN-64/80/96 based on their key lengths.We know that block cipher's security and implementation cost mainly depends on the key size and block size. Keeping in mind that lightweight ciphers are used in resource constrained machines like sensors, RFIDs, the block length is decided to be 64 bits as high-throughput is not expected in these devices as large block lengths and larger keys are unnecessary. As 64 bit key length might be little vulnerable if we consider attacks based on pre-computation and large storage capacities, it is suggested to use KLEIN-64 for message authentication codes and hash functions, Where as KLEIN-80/96 are to be used for encryption in any of the modes of operation.\\
 
-\subsection{Optimal Platform} Generally light weight ciphers are optimized for hardware implementation as they are used in RFID tags and smart cards. But if a system can support the computation and memory requirements if the software implementation, the costs of manufacturing and maintenance will reduce drastically as we can simply update the implementation of the cipher by simply installing a software update. They are also more flexible. So they mainly focused on the software implementation of KLEIN. 
+\subsection{Optimal Platform} Generally light weight ciphers are optimized for hardware implementation as they are used in RFID tags and smart cards. But if a system can support the computation and memory requirements of the software implementation, the costs of manufacturing and maintenance will reduce drastically as we can simply update the implementation of the cipher by simply installing a software update. They are also more flexible. So they mainly focused on the software implementation of KLEIN. 
 But both the software and hardware implementations are light weight.\\
 \subsection{Critical Threats}
 At the basic, the cipher should be resistant to general attacks like differential and linear. An for a cipher to be secure enough and implemented widely it should also be resistant to the related key attacks and the ones which belong to Grey box model like side channel attacks. Even if the sensor nodes are compromised they should not be able to crack the cipher. But generally the hardware implementations are vulnerable to the side channel attacks like differential power analysis etc. The protection methods of these side channel attacks like Blindfolding, making and re-keying techniques are suitable enough for normal ciphers in terms implementation costs. For lightweight ciphers their costs should as minimal as possible. The Key schedule of KLEIN is said to balanced enough as it is resistant against related key attacks. \\
@@ -67,7 +67,7 @@ At the basic, the cipher should be resistant to general attacks like differentia
 \section{Specification of KLEIN}
 
 \subsection{Structure of KLEIN}
-KLEIN is made of Substitution-Permutation-Network(SPN) which is also used in popular ciphers like AES and PRESENT. By taking into the consideration of security margin and the asymmetric iteration we chose 12/16/20 rounds for KLIEN-64/80/96 respectively.$N_{R}$ is used to represent the number of rounds.\\
+KLEIN is made of Substitution-Permutation-Network(SPN) which is also used in popular ciphers like AES and PRESENT. By taking into the consideration of security margin and the asymmetric iteration we chose 12/16/20 rounds for KLIEN-64/80/96 respectively. $N_{R}$ is used to represent the number of rounds.\\
 The pseudo-code of KLEIN is displayed below.\\
 
 \begin{algorithm}[H]
@@ -87,7 +87,7 @@ $sk_{i+1} = KeySchedule(sk_{i} , i);$ \\
 \subsection{Round Transformation}
 The Input and Out put of KLEIN is in terms of one-dimensional array of bytes. All the steps in each round can be optimized by byte-oriented algorithms. \textbf{Image should be added here}.
 \subsubsection{SubNibbles step}
-Before this step, the corresponding round key will be xor-ed with the input . The obtained resultant state is passed to subnibbles where the state is divided into 16 4-bit nibbles and given as input to the 4 x 4 Involutive permutation. Involutiveness of S-box is helpful to degrees the implementation costs of calculating its inverse and also the need of protection against side channel attacks is removed as we only need to protect single S-box. The S-box is displayed below.
+Before this step, the corresponding round key will be xor-ed with the input . The obtained resultant state is passed to subnibbles where the state is divided into 16 4-bit nibbles and given as input to the 4 x 4 Involutive permutation. Involutiveness of S-box is helpful to decrease the implementation costs of calculating its inverse and also the need of protection against side channel attacks is removed as we only need to protect single S-box. The S-box is displayed below.
 \begin{center}\begin{math}
 \begin{array}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
@@ -107,7 +107,6 @@ To obtain the required resistance against linear and differential cryptanalysis,
     Furthermore, if $wt(\Delta_{I} ) = wt(\Delta{O} )=1$, where $wt(X)=\sum_{i}X_{i}\;$($X_{i}$ is ith bit of X) , we have
 $$\#\{x \in \mathbb{F}^{4}_{2} |S(x) + S(x + \Delta_{I} ) = \Delta_{O} \} \leq 2$$.
 \end{enumerate}
-
 
 
 
@@ -200,8 +199,6 @@ $sk_{i+1}$ = (y0 y1 $ y2 \oplus R_i $ y3 z0 Sbox(z1) Sbox(z2) z4)\\
 Before we proceed to the analysis of attacks done on KLEIN, let us analyze some properties of SBOX.\\
 The DDT(Differential Distribution Table) of SBOX is written below:
 \begin{center}
-    
-
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
 $\Delta_{In}|\Delta_{Out}$ &0&1&2&3&4&5&6&7&8&9&10&11&12&13&14&15 \\
@@ -474,7 +471,7 @@ All the above analysis is for calculating probability for any random pair of pla
 So the the no.of plaintext pairs that become a confirming pairs under a wrong key are $2^{-24}\,*\,2^{16} = 2^{-8}$ if m=$2^{16}$.\\
 The no.of plain text pairs that become a confirming pair under a correct key are $2^{15}\,*\,2^{16}\,*\,2^{-29} = 2^{2}$ for m=$2^{16}$, as the probability of truncated differential is $2^{-29}$.\\ \\.
 \textbf{Time and Space Complexity} \\
-
+Step 2 takes $2^{16}*2^{16}/8$ one round 64 bit encryptions. In Step 3 it takes $2^{15}*2^{16}*2^{16}*7/8$ encryptions whereas in step 4 it takes $2^{-17}*2^{16}*2^{16}*2^{32}/8$ encryptions are required and step 6 takes about $2^{16}$ encryptions.So overall time complexity $2^{46.8}$ one round 64 bit encryptions.The data complexity is $2^{32}$ plaintexts. Memory complexity is $2^{32}$ 64bit states. 
 
 
 % \label{sec:main}
