@@ -118,7 +118,7 @@ Assume at the ith round state is $ b_{0} b_{1} b_{2} b_{3} b_{4} b_{5} b_{6} b_{
 Let the current state be $c_{0} c_{1} c_{2} c_{3} c_{4} c_{5} c_{6} c_{7} c_{8} c_{9} c_{10} c_{11} c_{12} c_{13} c_{14} c_{15}$\\
 Now first this state is divided into two parts \\
 $ c_{0} c_{1} c_{2} c_{3} c_{4} c_{5} c_{6} c_{7} $ and $c_{8} c_{9} c_{10} c_{11} c_{12} c_{13} c_{14} c_{15}$ \\
-We denote each of this part as a single column matrix with each element as 8-bit($c_{i}|c_{i+1}$) \\. The next state in the algorithm is obtained by multiplying(details needed ) this columns with a fixed matrix.This alogorithm is same as the MixColumns step in AES(Rijndael).All the steps in the round function are nibble wise operation except MixColumns which is byte wise. This operation is performed in GF(8) with modulo polynomial as $x^{8} + x^{4} + x^{3} + x + 1$.\\ \\
+We denote each of this part as a single column matrix with each element as 8-bit($c_{i}|c_{i+1}$) \\. The next state in the algorithm is obtained by multiplying this columns with a fixed matrix.This alogorithm is same as the MixColumns step in AES(Rijndael).All the steps in the round function are nibble wise operation except MixColumns which is byte wise. This operation is performed in GF(8) with modulo polynomial as $x^{8} + x^{4} + x^{3} + x + 1$.\\ \\
 $\begin{bmatrix}
 s^{i+1}_{0} | s^{i+1}_{1}\\
 s^{i+1}_{2} | s^{i+1}_{3}\\

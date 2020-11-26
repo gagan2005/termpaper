@@ -63,3 +63,75 @@ Furthermore, if $wt(\Delta_{I} ) = wt(\Delta{O} )=1$, where $wt(X)=\sum_{i}X_{i}
 $$\#\{x \in \mathbb{F}^{4}_{2} |S(x) + S(x + \Delta_{I} ) = \Delta_{O} \} \leq 2$$.
 \end{enumerate}
 \end{frame}
+
+\begin{frame}
+\textbf{Rotate Nibbles}
+\begin{enumerate}
+	
+	\item Assume at the ith round state is $ b_{0} b_{1} b_{2} b_{3} b_{4} b_{5} b_{6} b_{7} b_{8} b_{9} b_{10} b_{11} b_{12} b_{13} b_{14} b_{15} $ where $b_{i}$ is a nibble. The rotate nibble step involves left circular shift of two bytes of this state i.e after the rotate nibbles step our state becomes $   b_{4} b_{5} b_{6} b_{7} b_{8} b_{9} b_{10} b_{11} b_{12} b_{13} b_{14} b_{15} b_{0} b_{1} b_{2} b_{3} $ 
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+	\textbf{Mix nibbles}
+\begin{enumerate}
+
+	\item Let the current state be $c_{0} c_{1} c_{2} c_{3} c_{4} c_{5} c_{6} c_{7} c_{8} c_{9} c_{10} c_{11} c_{12} c_{13} c_{14} c_{15}$\\
+	
+	\item This state is divided into two parts \\
+	$ c_{0} c_{1} c_{2} c_{3} c_{4} c_{5} c_{6} c_{7} $ and $c_{8} c_{9} c_{10} c_{11} c_{12} c_{13} c_{14} c_{15}$ \\
+	
+	\item Each two nibble pair acts as a byte and each of the above part form a column. Then the multiplication process is same as that of one column of AES.
+\end{enumerate}
+
+\end{frame}	
+
+\begin{frame}
+	$\begin{bmatrix}
+	s^{i+1}_{0} | s^{i+1}_{1}\\
+	s^{i+1}_{2} | s^{i+1}_{3}\\
+	s^{i+1}_{4} | s^{i+1}_{5}\\
+	s^{i+1}_{6} | s^{i+1}_{7}
+	\end{bmatrix}=
+	\begin{bmatrix}
+	2&3&1&1\\
+	1&2&3&1\\
+	1&1&2&3\\
+	3&1&1&2
+	\end{bmatrix}
+	\begin{bmatrix}
+	c_{0}|c_{1}\\
+	c_{2}|c_{3}\\
+	c_{4}|c_{5}\\
+	c_{6}|c_{7}
+	\end{bmatrix}  $ ,
+	$\begin{bmatrix}
+	s^{i+1}_{8} | s^{i+1}_{9}\\
+	s^{i+1}_{10} | s^{i+1}_{11}\\
+	s^{i+1}_{12} | s^{i+1}_{13}\\
+	s^{i+1}_{14} | s^{i+1}_{15}
+	\end{bmatrix}=
+	\begin{bmatrix}
+	2&3&1&1\\
+	1&2&3&1\\
+	1&1&2&3\\
+	3&1&1&2
+	\end{bmatrix}
+	\begin{bmatrix}
+	c_{8}|c_{9}\\
+	c_{10}|c_{11}\\
+	c_{12}|c_{13}\\
+	c_{14}|c_{15}
+	\end{bmatrix}  $\\ \\
+	Thus we obtain the next state 
+	$ s^{i+1}_{0}  s^{i+1}_{1}
+	s^{i+1}_{2}  s^{i+1}_{3}
+	s^{i+1}_{4}  s^{i+1}_{5}
+	s^{i+1}_{6}  s^{i+1}_{7}
+	s^{i+1}_{8}  s^{i+1}_{9}
+	s^{i+1}_{10}  s^{i+1}_{11}
+	s^{i+1}_{12}  s^{i+1}_{13}
+	s^{i+1}_{14}  s^{i+1}_{15} $
+\end{frame}
+	
+	

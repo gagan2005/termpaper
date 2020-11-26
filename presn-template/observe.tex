@@ -201,5 +201,89 @@ We can form nC2 i.e $(2^{16} \text{x} (2^{16} - 1))/2 = 2^{31}$ plain text pairs
 \textbf{Step 6.} Guess the remaining 16 bits key in the similar way by verifying third and fourth columns.\\ \\ \\
 \textbf{Time and Space Complexity} \\
 Step 2 takes $2^{16}*2^{16}/8$ one round 64 bit encryptions. In Step 3 it takes $2^{15}*2^{16}*2^{16}*7/8$ encryptions whereas in step 4 it takes $2^{-17}*2^{16}*2^{16}*2^{32}/8$ encryptions are required and step 6 takes about $2^{16}$ encryptions.So overall time complexity $2^{46.8}$ one round 64 bit encryptions.The data complexity is $2^{32}$ plaintexts. Memory complexity is $2^{32}$ 64bit states. 
+\end{frame}
 
+\begin{frame}{Integral Analysis}
+	\textbf{Observations}
+	\begin{enumerate}
+		
+		\item If we give $2^{32}$ different input values to the Rotate Nibble then after the Rotate Nibble and sub nibble operation and 3 rounds of KLIEN all the output nibbles are balanced \\ \\
+		
+		\item If in the input state $i_{th}$ nibble is active where i=0,1,2,3,12,13,14,15 then after 1 round of KLIEN and one add key and one sub nibble all $j_{th}$ nibbles are active where j=8,9,10,11,12,13,14,15 \\
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			A & A & C & A & C & C & C & C \\
+			\hline
+			C & C & C & C & A & A & A & A\\
+			\hline
+		\end{tabular}
+		$\xrightarrow{1.5round}$
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			X & X & X & X & X & X & X & X \\
+			\hline
+			A & A & A & A & A & A & A & A\\
+			\hline
+		\end{tabular}\\
+	\end{enumerate}
+\end{frame}
+\begin{frame}
+	\textbf{Combining Obs. to Get 5 round Distinguisher}\\
+	\begin{tabular}{|c|c|c|c|c|c|c|c|}
+		\hline
+		A & A & C & A & C & C & C & C \\
+		\hline
+		C & C & C & C & A & A & A & A\\
+		\hline
+	\end{tabular}\\
+	\begin{center}$\downarrow 5 round$\\ \end{center}
+	\begin{tabular}{|c|c|c|c|c|c|c|c|}
+		\hline
+		B & B & B & B & B & B & B & B \\
+		\hline
+		B & B & B & B & B & B & B & B\\
+		\hline
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{ 7 round integral attack}
+	
+	\begin{itemize}
+	\item We can take our 5 round distinguisher one step further as Round key addition does not change the Balance property. Let $Y_{j}$ be the input to 6th round Sbox of the  plaintext where j denotes the jth nibble. Then the xor sum of $Y_{j}$ over all plaintext is 0 \\
+	
+	\\
+	Let $y_{j}$ be the jth nibble obtained after Reversing the sub bytes.\\ \\ Clearly $y_{j}$=$S^{-1}$ ($X_{j}\oplus sk_{7,j}) $ 
+	\\ \\
+	\item After Mix columns of 6th round we get the following relation \\ \\
+	$Y_{4}||Y_{5}$ = $S^{-1}(R^{-1}(e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))
+	\oplus sk_{6,4} || sk_{6,5})$
+	\\ \\
+	\end{itemize}
+\end{frame}
+\begin{frame}
+	\textbf{Analysis Procedure}
+	\begin{itemize}
+		\item We first get \textbf{5} sets of $2^{32}$ plaintexts. For each of these sets we do the following-
+		\item Guess $sk_{7,0}$,$sk_{7,1}$,$sk_{7,2}$,$sk_{7,3}$ for each plaintext and obtain $e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})$\\
+		Let $u1$=$e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})$ \\.
+		Now we get $2^{24}$ different values of $(u1\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))$ as each of the term is 8 bytes.
+		
+		\item Guess $sk_{7,4}$,$sk_{7,5}$ and obtain 
+		$d.(y_{4}||y_{5})$\\
+		Let $u2$=$u1 \oplus (y_{4}||y_{5})$  \\  
+		Now are left with $2^{16}$ values of $(u2\oplus9.(y_{6}|| y_{7}))$ \\
+	\end{itemize}
+\end{frame}
+\begin{frame}
+	\begin{itemize}
+	
+		\item Guess $sk_{7,6}$,$sk_{7,7}$ and obtain 
+		$d.(y_{6}||y_{7})$\\
+		Let $u3$=$u2 \oplus (y_{6}||y_{7})$  \\  
+		Now are left with $2^8$ values of $(u3)$ \\
+		\item Now our equation becomes \\
+		$Y_{4}||Y_{5}$ = $S^{-1}(R^{-1}(u3)
+		\oplus sk_{6,4} || sk_{6,5})$\\
+		\item We now guess $sk_{6,4}$ and $sk_{6,5}$ and then obtain the Sum of $Y_{4}||Y_{5}$. If its not 0 we discard our guess. Wrong key can also give 0  with 1/128 probability and therefore we used 5 sets
+	\end{itemize}
 \end{frame}
