@@ -473,6 +473,100 @@ The no.of plain text pairs that become a confirming pair under a correct key are
 \textbf{Time and Space Complexity} \\
 
 
+\subsection{Integral Cryptanalysis}
+
+Assume n plaintexts are chosen.We define the following 
+
+1.A nibble is said to be \textbf{Balanced} if the sum of its output across all inputs is 0
+
+2.A nibble is said to be \textbf{Active} if it attains all the possible input values 
+
+\subsubsection{5 round integral distinguisher}
+
+\textbf{Observations}\\ \\
+
+(1) If we give $2^{32}$ different input values to the Rotate Nibble then after the Rotate Nibble and sub nibble operation and 3 rounds of KLIEN all the output nibbles are balanced \\ \\
+
+(2) If in the input state $i_{th}$ nibble is active where i=0,1,2,3,12,13,14,15 then after 1 round of KLIEN and one add key and one sub nibble all $j_{th}$ nibbles are active where j=8,9,10,11,12,13,14,15\\ \\
+One more consequence of Observation 2 is that if we give $2^{32}$ different input values with $i_{th}$ nibble  active where i=0,1,2,3,12,13,14,15 then after 1 round of KLIEN and one add key and one sub nibble we will also get $2^32$ different values as 8 active . Now when this output goes into rotate nibble using observation 1 we get all Balanced nibbles after a Rotate Nibble and 3 rounds of KLIEN.\\ \\
+So we can state the following proposition now 
+\\ \\
+If we chose $2^{32}$ different plaintext such that (i) All plaintexts are unique and (ii) The ith nibble is active where i=0,1,2,3,12,13,14,15  then after 5 rounds of KLIEN encryption all the nibbles come out as balanced(i.e their output sum is 0)\\ \vspace{0.1\linewidth}\\
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+	\hline
+	A & A & C & A & C & C & C & C \\
+	\hline
+	C & C & C & C & A & A & A & A\\
+	\hline
+\end{tabular}
+$\xrightarrow{1.5round}$
+\begin{tabular}{c|c|c|c|c|c|c|c|}
+	\hline
+	X & X & X & A & X & X & X & X \\
+	\hline
+	A & A & A & A & A & A & A & A\\
+	\hline
+\end{tabular}\\
+\\ \vspace{0.1\linewidth}\\
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+	\hline
+	A & A & C & A & C & C & C & C \\
+	\hline
+	C & C & C & C & A & A & A & A\\
+	\hline
+\end{tabular}
+$\xrightarrow{5round}$
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+	\hline
+	B & B & B & B & B & B & B & B \\
+	\hline
+	B & B & B & B & B & B & B & B\\
+	\hline
+\end{tabular}
+\\ 
+\begin{center}
+	Each box denote a Nibble \\
+	\begin{itemize}
+		\item A - active nibble
+		\item B - Balanced nibble
+		\item C - Constant output sum
+		\item X - Sum can be anything
+	\end{itemize}
+\end{center}
+
+\subsubsection{7 round Integral distinguisher}
+
+We can take our 5 round distinguisher one step further as Round key addition does not change the Balance property. Let $Y_{j}$ be the input to 6th round Sbox of the  plaintext where j denotes the jth nibble. Then the xor sum of $Y_{j}$ over all plaintext is 0 \\
+
+Lets call the Cipher obtained after 7 round encryption $C$ and jth nibble of it as  $C_{j}$.Since Rotate Nibble and Mix columns are invertibly then Let $X_{j}$ be the state obtained after inverting Mix columns and Rotate nibbles.Let $sk_{7}$ be the 8th round subkey and $sk_{7}$ 7th round subkey. \\
+\\
+Let $y_{j}$ be the jth nibble obtained after Reversing the sub bytes.\\ \\ Clearly $y_{j}$=$S^{-1}$ ()$X_{j}\oplus sk_{7,j}) $ 
+\\ \\
+Also reversing the Mix columns of 6th round we get the following relation \\ \\
+	$Y_{4}||Y_{5}$ = $S^{-1}(R^{-1}(e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))
+	\oplus sk_{6,4} || sk_{6,5})$
+\\ \\
+
+Now since $Y_{4}$ and $Y_{5}$ are balanced we can guess subkeys and check our guesses. \\ The exact procedure is as follows \\ \\
+\begin{itemize}
+	\item We first get \textbf{5} sets of $2^32$ plaintexts. For each of these sets we do the following-
+	\item Guess $sk_{7,0}$,$sk_{7,1}$,$sk_{7,2}$,$sk_{7,3}$ for each plaintext and obtain $e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})$\\
+	Let $u1$=$e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})$ \\.
+	Now we get $2^{24}$ different values of $(u1\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))$ as each of the term is 8 bytes.
+	
+	\item Guess $sk_{7,4}$,$sk_{7,5}$ and obtain 
+	$d.(y_{4}||y_{5})$\\
+	Let $u2$=$u1 \oplus (y_{4}||y_{5})$  \\  
+	Now are left with $2^{16}$ values of $(u2\oplus9.(y_{6}|| y_{7}))$ \\
+	\item Guess $sk_{7,6}$,$sk_{7,7}$ and obtain 
+	$d.(y_{6}||y_{7})$\\
+	Let $u3$=$u2 \oplus (y_{6}||y_{7})$  \\  
+	Now are left with $2^8$ values of $(u3)$ \\
+	 \item Now our equation becomes \\
+	 $Y_{4}||Y_{5}$ = $S^{-1}(R^{-1}(u3)
+	 \oplus sk_{6,4} || sk_{6,5})$\\
+	 \item We now guess $sk_{6,4}$ and $sk_{6,5}$ and then obtain the Sum of $Y_{4}||Y_{5}$. If its not 0 we discard our guess. Wrong key can also give 0  with 1/128 probability and therefore we used 5 sets
+\end{itemize}
 
 % \label{sec:main}
 \printbibliography
