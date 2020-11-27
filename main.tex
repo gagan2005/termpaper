@@ -247,9 +247,49 @@ y_{2}= 1+ x_{1}+ x_{2}+ x_{0}x_{2}+ x_{1}x_{2}+ x_{0}x_{3}+ x_{0}x_{1}x_{2}+ x_{
 y_{3} = x_{1}+ x_{3}+ x_{0}x_{2}+ x_{0}x_{3}+ x_{0}x_{1}x_{3}+ x_{1}x_{2}x_{3} \\
 \end{math}
 
+\subsection{A Collection of Differential Characteristics}
+The 8 round attack identifies a collection of iterative differential characteristics which have
+the same input and output differences in a specific 32-bit subspace. To start with we analyze the probability to satisfy one of the characteristics,Further verified successful experimentally.
+\subsubsection{Observations}
+The four important observations which help us in identifying high-
+probability differentials for KLEIN. We assume Mix-Column as the function executed twice within Mix-Nibbles.
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+$Observation$ &Differece Entering Mix Column&Output Difference&X&Y\\
+\hline
+1 & 0000000X  & 0Y0Y0Y0Y & {1, . . . , 7} & Non-Zero Value\\
+\hline
+2 & 0X0X0X0X & 0Y0Y0Y0Y& {0, . . . , 7} & Possibly Null Value\\
+\hline
+3 & 0X0X0X0X & 0Y0Y0Y0Y& {8, . . . , f} & Possibly Zero\\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Observation 1}. If the difference entering MixColumn is like 0000000X
+where X is non-zero difference in ${1, . . . , 7}$ then the output difference is 0Y0Y0Y0Y, where the Y
+represents a non-zero difference ie higher nibbles remain free of difference.\\
+\textbf{Observation 2}. If the difference entering MixColumn is of  0X0X0X0X
+where the wildcard X represents a difference in ${0, . . . , 7}$, then the output dif-
+ference will be of the form 0Y0Y0Y0Y, where Y represents a possibly null difference.
+Furthermore, the average number of non-zero Y’s is 3.75.\\
+\textbf{Observation 3}. If the difference entering MixColumn is like 0X0X0X0X where the wildcard X represents a difference in ${8, . . . , f}$, then output difference is of form 0Y0Y0Y0Y, Y represents a possibly zero difference. Furthermore, the average number of non-zero Y’s is 3.75.\\
+\textbf{Observation 4}. Given a random difference, KLEIN’s Sbox returns a difference in ${1, . . . , 7}$ with probability 7/15 ≈ $2^{−1.1}$,for a random input. If the difference is b or e, the probability is 3/4 almost $2^{−0.42}$. These values can be verified using the difference distribution table.\\
+
+\begin{figure}
+    \centering
+    \includegraphics[width= \textwidth]{images/Representationcollectiondifferentialcharacteristics.png} 
+    \caption{Representation of the collection of differential characteristics}
+    \label{fig:6distinguisher}
+\end{figure}
+
 \subsection{Attack on 8 Rounds of KLEIN}
+
 \subsubsection{Finding and Exploiting Neutral Bits}
-Lets start with defining a neutral bit is a bit wrt a given differential, ie flipping the bit in input conforming to the differential leads to new input conforming the same differential.The use of the  neutral bits is to decrease the time in searching and finding values conforming to differential.
+Lets start with defining a neutral bit, it is a bit wrt a given differential, ie flipping the bit in input conforming to the differential leads to new input conforming the same differential.The use of the  neutral bits is to decrease the time in searching and finding values conforming to differential.
 The Input of a cryptographic function contains neutral bit.In plaintext block of the KLIEN we found that both the starting two and ending two bytes of input are neutral wrt to the collection of characteristics of the first two rounds.\\
 
 The bytes first sent into the Sbox In first round, then after RotateNibbles they form the 4-byte 1/2 of the state which is as-well inactive in Mix-Nibbles.In the second round with out depending on the other bytes firstly our neutral bytes pass through the Sbox , the difference then they are mixed with remaining bytes within MixNibbles.output conformation of MixNibbles only depend on active nibbles, our bytes remain neutral un-till here, in the third round, values which enter Sbox depend on first and last two input bytes hence these are not neutral for third round.Hence having a given pair of inputs fulfilling the truncated differential, $2^{32}$ pairs conforming to first two rounds can be obtained by varying the first two and last two input bytes.\\
@@ -262,13 +302,13 @@ According to the basis of 6-round differential characteristic a distinguisher fo
 The distinguisher for 7 Lead to finding one (and possibly many) conforming pairs at a lower cost than for an ideal cipher. For 8 rounds, the distinguisher consists in finding several pairs (rather than one) with reduced complexity. Firstly, one collects approximately $2^{33.90}$ pairs, and records the ones that conform to the output difference.Approximately 4 pairs satisfying the difference by chance are record , and one conforming to the collection of characteristics.It is observed that the conforming pair can be identified using the neutral bits. It follows that by testing $2^{32}$ derived pairs for each of the 5 pairs obtained initially, one new conforming pair is expected for the pairs obtained by chance and about 8 new pairs for the one conforming to the characteristics.Therefore, with about $2^{33.90}$ + 4 × $2^{32}$ ≈ $2^{35}$, one expects to find twice more conforming pairs than ideally.\\
 
 \subsubsection{Key-Recovery for 8 Rounds}
-The 7 rounds key-recovery attack can be derived by using the distinguisher of 5.1.2 for
+The 7 rounds key-recovery attack can be derived by using the distinguisher of 4.1.2 for
 finding the pair satisfying the 6-round differential.We exploit the invertibility of final MixNibbles and RotateNibbles to find-out output differences of every nibble after final SubNibbles.Further, the attack tries values of lower nibbles the linear combinations of key bits send them through Sbox; the difference thqat we get is then inverted after MixColumn; if difference only has lower nibbles active, then this is a possible guess.Given lower only active nibble the inverse MixNibbles result in lower only active nibbles with probability $2^{−3}$, The Search space is thus compacted from $2^{16}$
 to $2^{13}$ for each of the two MixColumn instances.Further, total cost of key-recovery gets reduced to $2^{58}$ trials. The attack always be fruitful because we are trying all candidate keys in the $2^{58}$ trials.This is improved further using several conforming pairs. Using neutral
 bits, one can produce 8 more pairs in $2^27$ where only 6 of them are enough to
 find out the right combination of key bits, by taking intersection of $2^{13}$ element sets for each conforming pair.We reobtain the 32 bits which correspond to the XOR of lower nibbles of ciphertexts.Linear combination of the key bits will result in further expansion and reaches almost equivalent to recovering 32 key bits. The remaining 32 key bits are bruteforced in $2^32$.The attack thus recovers the 64-bit key with less than than $2^{33}$ encryptions.\\
 
-if we extend the strategy of the 7-round attack to 8 rounds, mentioned as in 5.1.3 to detect the conforming pairs leads to “false alarms” (i.e. values conforming to the input/output differential
+if we extend the strategy of the 7-round attack to 8 rounds, mentioned as in 4.1.3 to detect the conforming pairs leads to “false alarms” (i.e. values conforming to the input/output differential
 but not necessarily to this context). Thus with less than $2^{34}$ encryptions, one thus can identify a high probability conforming pair.Using neutral bits, one expects to produce almost 8 other conforming pairs after $2^{32}$ trials which is more than enough to identify with certainty 32 bits
 of the last subkey. Overall, the 64 bits of the last subkey can be found with complexity less than
 $2^{35}$ encryptions.\\
@@ -564,6 +604,12 @@ Now since $Y_{4}$ and $Y_{5}$ are balanced we can guess subkeys and check our gu
 	 \oplus sk_{6,4} || sk_{6,5})$\\
 	 \item We now guess $sk_{6,4}$ and $sk_{6,5}$ and then obtain the Sum of $Y_{4}||Y_{5}$. If its not 0 we discard our guess. Wrong key can also give 0  with 1/128 probability and therefore we used 5 sets
 \end{itemize}
+
+\subsubsection{Conclusion}
+In this paper,We have described the Design Specifications of KLEIN Cipher, Different attacks on KLEIN Cipher.The goal is to explain how KLEIN is the practical and secure cipher for low-resource applications.Hardware efficiency of KLEIN from its simple structure with an involutive S-box.If we further modify rotate nibbles algorithm and Increase diffusion we can prevent the above described attacks.\\
+
+
+
 
 % \label{sec:main}
 \printbibliography
