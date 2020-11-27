@@ -82,7 +82,7 @@ The number in box represents the Nibble numbers of the 64 bit data block.
 \textbf{Lemma1.} If a byte is of the form $0z$, where $z$ is a 4-bit string
 with MSB bit as 0, then $0z$ multiply by $x$ is equal to $0z^{'}$, where $z ^{'}$
 is a 4-bit string.\\
-The following oservations are derived based on above lemma.\\ \\
+The following observations are derived based on above lemma.\\ \\
 
 \end{frame}
 
@@ -161,27 +161,21 @@ z_{4} $ are 0.\\
 \begin{frame}{Truncated Six Round Differential Distinguisher}
 Based on the above observations, we show that if the input difference of 6-round KLEIN are all zero except the 13-th nibble, after encryption, the first and the third column of state matrix will stay 0 with the probability of $2^{-29}$.\\
 This happens because the difference in column will not transfer to other column due to the RotateBits algorithm and above observations. \\ This is the reason for high probability 6-round differential distinguisher.
-The structure of 6-round distinguisher is clearly displayed in Figure \ref{fig:6distinguisher}.\\
 \end{frame}
 \begin{frame}
-    
-    \begin{figure}
+
+\begin{figure}[h!]
     \centering
-    \includegraphics[width= 8cm, height= 12cm, keepaspectratio]{./../images/6roundattack.png}
-    \caption{6 Round Distinguisher \cite{reduced_round}}
+    \includegraphics[width= 8cm, height= 8cm, keepaspectratio]{images/7round characteristic of round reduced.jpg}
+    \caption{7 round characteristic of 8 Round Distinguisher}
     \label{fig:6distinguisher}
 \end{figure}
+\\ \\
 \end{frame}
 
 \begin{frame}{Truncated Differential Analysis of 8-Round KLEIN-64}
 The 8 round distinguisher is constructed by adding an extra layer at the top and bottom of the 6 round distinguisher.\\
-As this is CPA(chosen plain text) attack, we choose plain text pairs such a way that input difference to the second round is all zero except the 13-th nibble. We actually obtain the required input pairs of first round by reverse tracing the single nibble that should be active at the end of the round.This process is also diplayed in Figure \ref{fig:8distinguisher} \\
-\begin{figure}
-    \centering
-    \includegraphics[width= \textwidth]{images/4to1_diff.jpg}
-    \caption{First Round of the 8 Round Distinguisher}
-    \label{fig:8distinguisher}
-\end{figure}\\ \\
+As this is CPA(chosen plain text) attack, we choose plain text pairs such a way that input difference to the second round is all zero except the 13-th nibble. We actually obtain the required input pairs of first round by reverse tracing the single nibble that should be active at the end of the round.This process is also diplayed in Figure \ref{fig:6distinguisher} \\
 \end{frame}
 \begin{frame}
 \textbf{ The Steps and Analysis Procedure}\\ \\

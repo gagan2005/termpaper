@@ -40,7 +40,7 @@ $sk_{i+1} = KeySchedule(sk_{i} , i);$ \\
 \begin{frame}{Round Transformation}
 \textbf{SubNibbles} \\
 Before this step, the corresponding round key will be xor-ed with the input . The obtained resultant state is passed to subnibbles where the state is divided into 16 4-bit nibbles and given as input to the 4 x 4 Involutive permutation. \\ \\
-Involutiveness of S-box is helpful to decrease the implementation costs of calculating its inverse and also the need of protection against side channel attacks is removed as we only need to protect single S-box.
+Involutiveness of S-box is helpful to decrease the implementation costs of calculating its inverse and also the need of protect only one sbox instead of two(original and inverse) in other ciphers from side channel attacks.
 \begin{center}\begin{math}
 \begin{array}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
@@ -60,7 +60,7 @@ It also satisfies following properties: \\
 \item For any non-zero input diff($\Delta_{I}$) and output diff($\Delta_{O}$) that belong to  $\mathbb{F}^{4}_{2} $, It should follow:
 $$ \#\{x \in \mathbb{F}^{4}_{2} | S(x) \oplus S(x \oplus \Delta_{I} ) = \Delta_{O} \} \leq 4$$.
 Furthermore, if $wt(\Delta_{I} ) = wt(\Delta{O} )=1$, where $wt(X)=\sum_{i}X_{i}\;$($X_{i}$ is ith bit of X) , we have
-$$\#\{x \in \mathbb{F}^{4}_{2} |S(x) + S(x + \Delta_{I} ) = \Delta_{O} \} \leq 2$$.
+$$\#\{x \in \mathbb{F}^{4}_{2} |S(x) \oplus S(x \oplus \Delta_{I} ) = \Delta_{O} \} \leq 2$$.
 \end{enumerate}
 \end{frame}
 
