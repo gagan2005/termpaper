@@ -251,7 +251,7 @@ Step 2 takes $2^{16}*2^{16}/8$ one round 64 bit encryptions. In Step 3 it takes 
 	Let $y_{j}$ be the jth nibble obtained after Reversing the sub bytes.\\ \\ Clearly $y_{j}$=$S^{-1}$ ($X_{j}\oplus sk_{7,j}) $ 
 	\\ \\
 	\item After Mix columns of 6th round we get the following relation \\ \\
-	$Y_{4}||Y_{5}$ = $S^{-1}(R^{-1}(e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))
+	$Y_{4}||Y_{5}$ = $S^{-1}(R^{-1}(e.(y_{0}||y_{1})\oplus b.(y_{2}||y_{3})\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))
 	\oplus sk_{6,4} || sk_{6,5})$
 	\\ \\
 	\end{itemize}
@@ -261,7 +261,7 @@ Step 2 takes $2^{16}*2^{16}/8$ one round 64 bit encryptions. In Step 3 it takes 
 	\begin{itemize}
 		\item We first get \textbf{5} sets of $2^{32}$ plaintexts. For each of these sets we do the following-
 		\item Guess $sk_{7,0}$,$sk_{7,1}$,$sk_{7,2}$,$sk_{7,3}$ for each plaintext and obtain $e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})$\\
-		Let $u1$=$e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})$ \\.
+		Let $u1$=$e.(y_{0}||y_{1})\oplus b.(y_{2}||y_{3})$ \\.
 		Now we get $2^{24}$ different values of $(u1\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))$ as each of the term is 8 bytes.
 		
 		\item Guess $sk_{7,4}$,$sk_{7,5}$ and obtain 
