@@ -15,8 +15,8 @@
 \usepackage{amssymb}
 \usepackage{biblatex}
 \addbibresource{citations.bib}
-% \bibliographystyle{alpha}
-\bibliography{abbrev3,crypto}
+% % \bibliographystyle{alpha}
+% \bibliography{abbrev3,crypto}
 %%%% 3. AUTHOR, INSTITUTE %%%%
 \author{Gagan deep singh(11840480)\inst{1} \and Siram Nikhil\inst{1}(11841090) \and Kolli Madhukar(11840670)\inst{1}}
 \institute{
@@ -50,7 +50,7 @@ In the day to day life, the usage of IoT is increasing exponentially.Parallely t
 
 
 %%%% 7. PAPER CONTENT %%%%
-\section{Introduction}
+\section{Introduction}  \cite{KLEIN}
 As the development and usage of wireless computing and embedded systems is increasing we are being increasingly dependent on Ubiquitous computing examples are sensors, RFID tags etc. On these limited resource systems the selection of the security algorithms must be done carefully by taking the implementation costs along with the level of security provided. So the Era of light-weight cryptography is started. Many algorithms with various design strategies were proposed.Few of them were skipjack, KATAN\cite{KATAN}, KTANTAN\cite{KATAN}, PRESENT\cite{PRESENT} etc. skipjack is 8 bit key and 64-bit block length cipher whose basic design is based on unbalanced feistal network. PRESENT is 80/128 bit key and 64 bit block size cipher  which is extremely hardware efficient as the diffusion layer constitutes of only wiring with no algebraic unit.
 Before wide implementation of a security algorithm, it should be thoroughly analysed. As the result of these analysis an attack on 31 out of 32 rounds of skipjack based on impossible differential is discovered. Also there are weak key attacks and linear attacks on PRESENT.Hence the need of secure lightweight-ciphers did not came to and end. KLEIN is a lightweight block cipher which is mainly invented for devices like sensors which have very less resources. KLEIN \cite{KLEIN} is based on Substitution Permutation Networks. In this paper we will be seeing the working of KLEIN cipher, implementation details and different attacks performed on it along with the comparison of performance and security among few other .
 \section{Design rationale}
@@ -263,7 +263,7 @@ y_{3} = x_{1}+ x_{3}+ x_{0}x_{2}+ x_{0}x_{3}+ x_{0}x_{1}x_{3}+ x_{1}x_{2}x_{3} \
 \end{math}
 
 
-\subsection{Cryptanalysis of Reduced-Round KLEIN Block Cipher} \cite{reduced_round}
+\subsection{Cryptanalysis of Reduced-Round KLEIN Block Cipher \cite{reduced_round}} 
 The weakness present in the Rotate Nibbles and Mix columns step is exploited here in this attack.\\
 Firstly, a 6 round truncated differential distinguisher with $2^{-29}$ is made.Using this as base, an 8 Round distinguisher is constructed.One of the assumption is they will be having access to round wise outputs.\\
 Lets have look at few terminologies used in this attack:\\
@@ -554,7 +554,7 @@ Now since $Y_{4}$ and $Y_{5}$ are balanced we can guess subkeys and check our gu
 
 % Madhukar
 
-\subsection{A Collection of Differential Characteristics} \cite{8round}
+\subsection{A Collection of Differential Characteristics \cite{8round}} 
 The 8 round attack identifies a collection of iterative differential characteristics which have
 the same input and output differences in a specific 32-bit subspace. To start with we analyze the probability to satisfy one of the characteristics,Further verified successful experimentally.
 \subsubsection{Observations}
@@ -621,10 +621,10 @@ of the last subkey. Overall, the 64 bits of the last subkey can be found with co
 $2^{35}$ encryptions.\\
 
 
-\subsection{Side-Channel Attack on KLEIN}
+\subsection{Side-Channel Attack on KLEIN  \cite{Heuser2016SideChannelAO} \cite{DBLP:journals/joc/NikovaRS11}}
 KLEIN posses a highly balanced key schedule wrt its opposition against Key-Related attacks and the dexterity of the keys, secret sharing method for resistance of side-channel attacks.Introducing noise and loops is easy in software implementation of a block-cipher to prevent side-channel attacks,For securing the hardware implementation of KLEIN.We already know that as far as the SubNibbles step is considered KLEIN is completely linear. The S-box of KLEIN can be implemented to resist side-channel attacks even in the presence of glitches using the secret sharing method proposed which is based on multi-party-computation protocols.using The three main properties namely Correctness,Uniformity and Non-Completeness.These help by computing the correlation between the average power consumption of device and the hypothetical power consumption with the help of a guessed key.The Linear part of KLEIN can be securely dealt-with by using independent shares.The masking based on secret sharing increases the hardware overhead, still promising because it was theoretically proven to be secure against DPA attacks. Differential power analysis is a side-channel attack involving mathematically analyzing power consumption measurements from a cryptosystem.\\
 
-\subsection{Performance Evaluation On AVR microcontroller}
+\subsection{Performance Evaluation On AVR microcontroller \cite{Alizadeh2012SecurityAP}} 
 
 \subsubsection{With Respect To Energy Consumption}
 To measure energy consumption, it is assumed that
