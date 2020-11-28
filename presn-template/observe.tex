@@ -77,12 +77,12 @@ The state of encryption: \\
 \hline
 \end{tabular}
 \end{center}
-The number in box represents the Nibble numbers of the 64 bit data block.\\
+The number in box represents the Nibble numbers of the 64 bit data block.
 \textbf{Some properties and observations of KLEIN cipher}\\
 \textbf{Lemma1.} If a byte is of the form $0z$, where $z$ is a 4-bit string
 with MSB bit as 0, then $0z$ multiply by $x$ is equal to $0z^{'}$, where $z ^{'}$
 is a 4-bit string.\\
-The following observations are derived based on above lemma.\\ \\
+The following oservations are derived based on above lemma.\\ \\
 
 \end{frame}
 
@@ -156,28 +156,32 @@ The following observations are derived based on above lemma.\\ \\
  if only if MSB's of $z_{1},
 z_{2} ,
 z_{3} \;and\;
-z_{4} $ are all 0 or all 1.\\
+z_{4} $ are 0.\\
 \end{frame}
 \begin{frame}{Truncated Six Round Differential Distinguisher}
 Based on the above observations, we show that if the input difference of 6-round KLEIN are all zero except the 13-th nibble, after encryption, the first and the third column of state matrix will stay 0 with the probability of $2^{-29}$.\\
 This happens because the difference in column will not transfer to other column due to the RotateBits algorithm and above observations. \\ This is the reason for high probability 6-round differential distinguisher.
+The structure of 6-round distinguisher is clearly displayed in Figure \ref{fig:6distinguisher}.\\
 \end{frame}
-
+\begin{frame}
+    
+    \begin{figure}
+    \centering
+    \includegraphics[width= 8cm, height= 12cm, keepaspectratio]{./../images/6roundattack.png}
+    \caption{6 Round Distinguisher \cite{reduced_round}}
+    \label{fig:6distinguisher}
+\end{figure}
+\end{frame}
 
 \begin{frame}{Truncated Differential Analysis of 8-Round KLEIN-64}
 The 8 round distinguisher is constructed by adding an extra layer at the top and bottom of the 6 round distinguisher.\\
-As this is CPA(chosen plain text) attack, we choose plain text pairs such a way that input difference to the second round is all zero except the 13-th nibble. We actually obtain the required input pairs of first round by reverse tracing the single nibble that should be active at the end of the round.This process is also diplayed in Figure \ref{fig:6distinguisher} \\
-\end{frame}
-
-\begin{frame}
-
-\begin{figure}[h!]
+As this is CPA(chosen plain text) attack, we choose plain text pairs such a way that input difference to the second round is all zero except the 13-th nibble. We actually obtain the required input pairs of first round by reverse tracing the single nibble that should be active at the end of the round.This process is also diplayed in Figure \ref{fig:8distinguisher} \\
+\begin{figure}
     \centering
-    \includegraphics[width= 8cm, height= 8cm, keepaspectratio]{images/7round characteristic of round reduced.jpg}
-    \caption{7 round characteristic of 8 Round Distinguisher}
-    \label{fig:6distinguisher}
-\end{figure}
-\\ \\
+    \includegraphics[width= \textwidth]{images/4to1_diff.jpg}
+    \caption{First Round of the 8 Round Distinguisher}
+    \label{fig:8distinguisher}
+\end{figure}\\ \\
 \end{frame}
 \begin{frame}
 \textbf{ The Steps and Analysis Procedure}\\ \\
@@ -251,7 +255,7 @@ Step 2 takes $2^{16}*2^{16}/8$ one round 64 bit encryptions. In Step 3 it takes 
 	Let $y_{j}$ be the jth nibble obtained after Reversing the sub bytes.\\ \\ Clearly $y_{j}$=$S^{-1}$ ($X_{j}\oplus sk_{7,j}) $ 
 	\\ \\
 	\item After Mix columns of 6th round we get the following relation \\ \\
-	$Y_{4}||Y_{5}$ = $S^{-1}(R^{-1}(e.(y_{0}||y_{1})\oplus b.(y_{2}||y_{3})\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))
+	$Y_{4}||Y_{5}$ = $S^{-1}(R^{-1}(e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))
 	\oplus sk_{6,4} || sk_{6,5})$
 	\\ \\
 	\end{itemize}
@@ -261,7 +265,7 @@ Step 2 takes $2^{16}*2^{16}/8$ one round 64 bit encryptions. In Step 3 it takes 
 	\begin{itemize}
 		\item We first get \textbf{5} sets of $2^{32}$ plaintexts. For each of these sets we do the following-
 		\item Guess $sk_{7,0}$,$sk_{7,1}$,$sk_{7,2}$,$sk_{7,3}$ for each plaintext and obtain $e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})$\\
-		Let $u1$=$e.(y_{0}||y_{1})\oplus b.(y_{2}||y_{3})$ \\.
+		Let $u1$=$e.(y_{1}||y_{2})\oplus b.(y_{2}||y_{3})$ \\.
 		Now we get $2^{24}$ different values of $(u1\oplus d.(y_{4}||y_{5})\oplus9.(y_{6}|| y_{7}))$ as each of the term is 8 bytes.
 		
 		\item Guess $sk_{7,4}$,$sk_{7,5}$ and obtain 
@@ -283,3 +287,150 @@ Step 2 takes $2^{16}*2^{16}/8$ one round 64 bit encryptions. In Step 3 it takes 
 		\item We now guess $sk_{6,4}$ and $sk_{6,5}$ and then obtain the Sum of $Y_{4}||Y_{5}$. If its not 0 we discard our guess. Wrong key can also give 0  with 1/128 probability and therefore we used 5 sets
 	\end{itemize}
 \end{frame}
+
+\begin{frame}{Practical Attack on 8 Rounds of KLEIN}
+	\textbf{Observations}
+	\begin{itemize}
+		\item \textbf{Observation 1.} If the difference entering MixColumn is of the
+form 0000000X where X represents a non-zero difference in \{1, . . . , 7\} then the output difference is of the form 0Y0Y0Y0Y, where the wildcard Y represents a non-zero difference. That is, higher nibbles remain free of difference.\\
+\item \textbf{Observation 2.} If the difference entering MixColumn is of the
+form 0X0X0X0X where the wildcard X represents a difference in \{0, . . . , 7\}, then the output difference is of the form 0Y0Y0Y0Y,where Y represents a possibly null difference. Furthermore, the
+average number of non-zero Y’s is 3.75, as one can experimentally verify. For example, the input difference 04020405 leads to the output difference 0f090100.\\
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Observations Cont'd}
+	\begin{itemize}
+		\item \textbf{Observation 3.} If the difference entering MixColumn is of the form 0X0X0X0X where the wildcard X represents a difference in {8, . . . , f}, then the output difference is of the form 0Y0Y0Y0Y, where Y represents a (possibly zero) difference. Furthermore, the average number of non-zero Y’s is 3.75. Note that, unlike Observation 2, an X cannot be zero. For example, the input difference 0c0a080f leads to the output difference 010f0708.\\
+\item \textbf{Observation 4.} Given a random difference, KLEIN’s Sbox
+returns a difference in {1, . . . , 7} with probability 7/15 approximates to $2^{−1.1}$, for a random input. If the difference is b or e, the probability is 3/4 approximates to $2^{−0.42}$.\\
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Finding More Right Pairs with Neutral Bits}
+	\begin{itemize}
+		\item A bit is said to be neutral with respect to a given differential
+(characteristic) when flipping this bit in an input conforming to the differential (characteristic) leads to a new input also conforming to that differential. 
+\item In KLEIN, one can observe that the first two and last two input bytes in a plaintext block are neutral with respect to the first two rounds’ collection of characteristics. 
+\item Therefore, for example, after a $2^{28}$ effort to find a pair
+satisfying the 6-round differential, one can derive $2^{32}$ pairs for which the full differential is followed with probability $2^{23.26}$.\\
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Key Recovery Of 8 Rounds}
+	\begin{itemize}
+		\item The attack exploits the invertibility of the final MixNibbles and RotateNibbles to determine the output differences of each nibble after the last SubNibbles.
+        \item  With approximately $2^{34}$ encryptions, one can identify a conforming pair with high probability.
+        \item Using neutral bits, one expects to produce approximately 8 other conforming pairs after $2^32$ trials. This is more than enough to identify with certainty 32 bits of the last subkey.
+        \item Overall, the 64 bits of the last subkey (and thus of the original key) can be found with complexity below $2^{35}$ encryptions.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Expanding to 7 and 8 rounds}
+	\begin{itemize}
+		\item We observe that for a pair conforming to the 6-round
+differential, the SubNibbles of round 7 has all higher nibbles
+inactive. Therefore a 7-round distinguisher can be built
+with the same $2^{28}$ observations data complexity.
+\item In the eight-round attack one first collects approximately $2^{33.90}$ pairs, and records the ones that conform to the output difference as per our collection of characteristics.
+\item One expects to record approximately 4 pairs satisfying the
+difference by chance, and one conforming to the collection
+of characteristics. The conforming pair can be identified
+using the neutral bits.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Expanding to 7 and 8 rounds}
+	\begin{itemize}
+		\item We observe that for a pair conforming to the 6-round
+differential, the SubNibbles of round 7 has all higher nibbles
+inactive. Therefore a 7-round distinguisher can be built
+with the same $2^{28}$ observations data complexity.
+\item In the eight-round attack one first collects approximately $2^{33.90}$ pairs, and records the ones that conform to the output difference as per our collection of characteristics.
+\item One expects to record approximately 4 pairs satisfying the
+difference by chance, and one conforming to the collection
+of characteristics. The conforming pair can be identified
+using the neutral bits.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Resistance against Side Channel Attacks}
+	\begin{itemize}
+		\item KLEIN posses a highly balanced key schedule wrt its opposition against Key-Related attacks and the dexterity of the keys, secret sharing method is used for resistance to side-channel attacks In which a CRT Algorithm is implemented.
+				\item The masking based on secret sharing increases the hardware overhead,but still promising because it was theoretically proven to be secure against DPA attacks. Differential power analysis is a side-channel attack involving mathematically analyzing power consumption measurements from a crypto-system. It makes the use of varying power consumption of microprocessorsor other hardwares while performing operations using secret keys.
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Performance Evaluation On AVR microcontroller}
+	\begin{itemize}
+		\item \textbf {With Respect To Energy Consumption}
+		\item \textbf {With Respect To Memory Efficiency}
+		\item \textbf {With Respect To Security}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{With Respect To Energy Consumption}
+	\begin{itemize}
+		\item To measure energy consumption, it is assumed that the energy per CPU cycle is fixed.This energy consumption includes the key scheduling and encryption.KLEIN is the best algorithm in comparison to other ciphers in aspect of energy consumption.
+		\item We learnt many important factors that effect the energy consumption such as the performance of code depends on several specifications of a cipher such as the Type of instructions, Mode of operation, Structure, Number of loops,Number of Rounds etc.
+		\item Another important factor is which kind of instruction.it is important factor to use correct instruction to write a code.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{With Respect To Energy Consumption Cont'd}
+	\begin{itemize}
+    \begin{figure}
+    \centering
+    \includegraphics[width= 75 mm]{Pics/EC.png} 
+    \caption{Energy consumption comparison of focused ciphers}
+    \label{fig:6distinguisher}
+\end{figure} 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{With Respect To Memory Efficiency}
+	\begin{itemize}
+		\item The memory usage of various lightweight algorithms is com-pared in Figure below which shows the percentage of memory used for each cipher. Analyzed results clearly state that KLEIN uses longer Flash memory space than the rest because the assembly code size of this algorithm is more than others Where as the percentage of SRAM usage for KLEIN cipher is not high as other ciphers. The Data Memory Usage for KATAN and KLEIN algorithm is equivalent.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{With Respect To Memory Efficiency Cont'd}
+	\begin{itemize}
+    \begin{figure}
+    \centering
+    \includegraphics[width= 75 mm]{Pics/DM.png} 
+    \caption{Memory Efficiency comparison of focused ciphers}
+    \label{fig:6distinguisher}
+\end{figure} 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{With Respect To Security.}
+	\begin{itemize}
+		\item Taking degree of confusion and diffusion as the security criteria. KLEIN has least de-gree of diffusion highest degree of confusion.This is related to the fact that of differentstructure.KLEIN is SPN and others Feistel.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{With Respect To Security Cont'd}
+	\begin{itemize}
+    \begin{figure}
+    \centering
+    \includegraphics[width= 75 mm]{Pics/DF.png} 
+    \caption{THE ANALYSIS OF DIFFUSION}
+    \label{fig:6distinguisher}
+\end{figure} 
+    \begin{figure}
+    \centering
+    \includegraphics[width= 75 mm]{Pics/DC.png} 
+    \caption{THE ANALYSIS OF CONFUSION}
+    \label{fig:6distinguisher}
+\end{figure} 
+	\end{itemize}
+\end{frame}
+
+
+
+
+
